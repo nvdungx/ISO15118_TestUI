@@ -1,0 +1,13 @@
+{
+    "jupyter.debugJustMyCode": false,
+    "editor.trimAutoWhitespace": true,
+    "python.formatting.provider": "autopep8",
+    "python.pythonPath": "venv/bin/python",
+    "eslint.validate": [
+        "javascript",
+        "javascriptreact",
+        "vue"
+    ],
+    "vetur.completion.autoImport": true,
+    "vetur.dev.logLevel": "DEBUG",
+}

@@ -1,0 +1,25 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+  <h1><b>TESTCASES</b></h1>
+  <hr/>
+  <h2><em>List of testcases:</em></h2>
+  {% if testcase_list %}
+  <ul style="list-style-type:none;">
+    {% for testcase in testcase_list %}
+      <li>
+        <form class="form-inline" action="" method="get">
+          <p><b>{{ testcase.id }}</b>. <a href="{{ testcase.get_absolute_url }}">{{ testcase.testcase_name }}</a>
+          - Status:<strong>{{ testcase.testcase_status }}</strong>
+          - Build:<strong>{{ testcase.testcase_build_status }}</strong>
+            <input type="submit" name="{{ testcase.testcase_name }}" value= "Execute">
+            <input type="submit" name="{{ testcase.testcase_name }}" value= "ViewLog">
+          </p>
+        </form>
+      </li>
+    {% endfor %}
+  </ul>
+  {% else %}
+    <p>There are no testcases available in database</p>
+  {% endif %}
+{% endblock %}

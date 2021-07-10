@@ -1,0 +1,49 @@
+{
+  "$schema": "http://json-schema.org/draft-06/schema#",
+  "$id": "urn:V2G:SLAC",
+  "comment": "V2G 1.0.0 Draft",
+  "definitions": {
+  },
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "C_EV_vald_nb_toggles": {
+      "description": "number BCB toggle",
+      "type": "integer",
+      "exclusiveMinimum": 0,
+      "default": 10
+    },
+    "C_EV_match_signalattn_direct": {
+      "description": "Signal Attenuation value for matching",
+      "type": "integer",
+      "exclusiveMinimum": 0,
+      "default": 20
+    },
+    "C_EV_match_signalattn_indirect": {
+      "description": "Signal Attenuation value for validation",
+      "type": "integer",
+      "exclusiveMinimum": 0,
+      "default": 60
+    },
+    "TP_EV_vald_state_duration": {
+      "description": "Toggle state period value",
+      "type": "number",
+      "exclusiveMinimum": 0,
+      "default": 0.3
+    },
+    "TP_EV_vald_toggle": {
+      "description": "Timer value for BCB monitor",
+      "type": "number",
+      "exclusiveMinimum": 0,
+      "default": 2.4
+    },
+    "TP_EV_SLAC_init": {
+      "description": "Timeout value for each init session",
+      "type": "number",
+      "exclusiveMinimum": 0,
+      "default": 15.0
+    }
+  },
+  "required": [
+  ]
+}

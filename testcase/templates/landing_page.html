@@ -1,0 +1,29 @@
+{% extends "base_generic.html" %}
+{% load testcase_extras %}
+{% block content %}
+  <h1><b>TESTUI</b></h1>
+  <hr/>
+  <h2>V2G testcase info</h2>
+  <ul>
+    <li><strong>Total:</strong> {{ total }}</li>
+    <li><strong>CMN:</strong> {{ cmn }}</li>
+    <li><strong>DC:</strong> {{ dc }}</li>
+    <li><strong>AC:</strong> {{ ac }}</li>
+  </ul>
+  <table>
+    <tr>
+      <th>Message name</th>
+      <th>CMN</th>
+      <th>AC</th>
+      <th>DC</th>
+    </tr>
+    {% for msg in msg_list %}
+    <tr>
+      <td><a href="{% url 'testcases' msg.msg_name %}">{{ msg.msg_name }}</a></td>
+      <td>{% list_index msg.cmn_num 1 %} | {% list_index msg.cmn_num 0 %}</td>
+      <td>{% list_index msg.ac_num 1 %} | {% list_index msg.ac_num 0 %}</td>
+      <td>{% list_index msg.dc_num 1 %} | {% list_index msg.dc_num 0 %}</td>
+    </tr>
+    {% endfor %}
+  </table>
+{% endblock %}

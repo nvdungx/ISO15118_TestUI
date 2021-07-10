@@ -1,0 +1,16 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+  <h1>Testcase Configuration</h1>
+  <hr/>
+  <p>{{ testcase.testcase_name }}</p>
+  <p>{{ testcase.testcase_condition }}</p>
+  <p>{{ testcase.testcase_expected }}</p>
+  <p>{{ testcase.testcase_pics }}</p>
+  <p>{{ testcase.testcase_pixit }}</p>
+  <input type="button" value="Edit">
+  <input type="button" value="Save">
+  <input type="button" value="Execute">
+  <input type="button" value="ViewLog">
+  <input type="button" value="Delete">
+{% endblock %}

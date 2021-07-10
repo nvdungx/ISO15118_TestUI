@@ -1,0 +1,15 @@
+{
+  "timer":
+  {
+    "par_V2G_EVCC_Msg_Timeout_SupportedAppProtocolReq" : 10
+  },
+  "pics":
+  {
+    "par_CMN_MaxEntriesSAScheduleTuple" : 1,
+    "PICS_CMN_CMN_CombinedTesting": false
+  },
+  "pixit":
+  {
+    "PIXIT_CMN_CMN_WakeUp" : 1.2
+  }
+}

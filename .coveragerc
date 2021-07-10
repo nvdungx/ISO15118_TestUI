@@ -1,0 +1,7 @@
+[run]
+source=testcase/
+omit=
+    venv
+    */migrations/*
+    */test/*
+    */__init__.py
