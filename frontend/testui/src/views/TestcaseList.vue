@@ -125,7 +125,7 @@ export default {
         // trigger get find by name
         TestcaseDataSerivce.findByMsgType(this.$route.query.msg_type)
           .then((response) => {
-            this.mutation_update_testcase_list({testcase_list: response.data});
+            this.muta_update_testcase_list({testcase_list: response.data});
             this.isLoading = false;
           })
           .catch((e) => {
@@ -137,7 +137,7 @@ export default {
         // get all testcase
         TestcaseDataSerivce.getAll()
           .then((response) => {
-            this.mutation_update_testcase_list({testcase_list: response.data});
+            this.muta_update_testcase_list({testcase_list: response.data});
             this.isLoading = false;
           })
           .catch((e) => {
@@ -173,7 +173,7 @@ export default {
       // type: (...)
       // check no testcase running then update data and execute
       if (this.getter_get_current_execute_tc.isrunning == false) {
-        this.mutation_update_execute_testcase({id: testcase.id, name: testcase.name, isrunning: true})
+        this.muta_update_execute_testcase({id: testcase.id, name: testcase.name, isrunning: true})
         // parse config pics, pixit string and update config data
         var config_json = ['', ''];
         [testcase.pics, testcase.pixit].forEach((config, index) =>{
@@ -196,7 +196,7 @@ export default {
           config_json[index] = JSON.parse(config_json[index]);
         });
         // call mutation to update current config with testcase specific
-        this.mutation_update_partial_current_cfg({pics: config_json[0], pixit: config_json[1]})
+        this.muta_update_partial_current_cfg({pics: config_json[0], pixit: config_json[1]})
         TestcaseDataSerivce.execute(testcase.id, this.getter_get_current_config)
           .then((response) => {
             console.log(response);
@@ -208,13 +208,13 @@ export default {
       }
     },
     ...mapMutations([
-      'mutation_update_summary', // map `this.increment()` to `this.$store.commit('increment')`
+      'muta_update_summary', // map `this.increment()` to `this.$store.commit('increment')`
       // `mapMutations` also supports payloads:
-      'mutation_update_testcase_list', // map `this.incrementBy(amount)` to `this.$store.commit('incrementBy', amount)`
-      'mutation_update_execute_testcase',
-      'mutation_update_current_cfg',
-      'mutation_update_default_cfg',
-      'mutation_update_partial_current_cfg',
+      'muta_update_testcase_list', // map `this.incrementBy(amount)` to `this.$store.commit('incrementBy', amount)`
+      'muta_update_execute_testcase',
+      'muta_update_current_cfg',
+      'muta_update_default_cfg',
+      'muta_update_partial_current_cfg',
     ]),
   },
   // beforeRouteEnter(to, from, next) {

@@ -6,7 +6,7 @@
           <v-card-title class="text-lg-h3">Configuration</v-card-title>
           <v-form ref="form" lazy-validation>
             <v-row dense>
-              <v-col>
+              <v-col cols="2">
                 <v-text-field
                   v-model="target_testcase.id"
                   :rules="[(v) => !!v || 'Testcase ID is required']"
@@ -18,7 +18,7 @@
                   :readonly="this.getter_get_current_execute_tc.isrunning"
                 ></v-text-field>
               </v-col>
-              <v-col>
+              <v-col cols="10">
                 <v-text-field
                   v-model="target_testcase.name"
                   :rules="[(v) => !!v || 'Testcase name is required']"
@@ -133,7 +133,7 @@ export default {
     // console.log("update");
     if (this.$store.state.default_config === null) {
         // store default config (default config create from schema)
-        this.mutation_update_default_cfg({default_config: this.configuration});
+        this.muta_update_default_cfg({default_config: this.configuration});
     }
   },
   data() {
@@ -203,7 +203,7 @@ export default {
       this.configuration = Vue.util.extend({}, this.getter_get_default_config);
     },
     executeTestcase() {
-      this.mutation_update_execute_testcase({id: this.target_testcase.id, name: this.target_testcase.name, isrunning: true});
+      this.muta_update_execute_testcase({id: this.target_testcase.id, name: this.target_testcase.name, isrunning: true});
       TestcaseDataSerivce.execute(this.getter_get_current_execute_tc.id, this.configuration)
         .then((response) => {
           console.log(response);
@@ -215,6 +215,7 @@ export default {
     cancelTestcase() {
       TestcaseDataSerivce.execute(this.target_testcase.id, {cancel: true})
         .then((response) => {
+          this.muta_update_execute_testcase({id: '', name: '', isrunning: false});
           console.log(response);
         })
         .catch((e) => {
@@ -225,12 +226,12 @@ export default {
       'action_update_current_tc'
     ]),
     ...mapMutations([
-      'mutation_update_summary', // map `this.increment()` to `this.$store.commit('increment')`
+      'muta_update_summary', // map `this.increment()` to `this.$store.commit('increment')`
       // `mapMutations` also supports payloads:
-      'mutation_update_testcase_list', // map `this.incrementBy(amount)` to `this.$store.commit('incrementBy', amount)`
-      'mutation_update_execute_testcase',
-      'mutation_update_current_cfg',
-      'mutation_update_default_cfg',
+      'muta_update_testcase_list', // map `this.incrementBy(amount)` to `this.$store.commit('incrementBy', amount)`
+      'muta_update_execute_testcase',
+      'muta_update_current_cfg',
+      'muta_update_default_cfg',
     ]),
   },
 };

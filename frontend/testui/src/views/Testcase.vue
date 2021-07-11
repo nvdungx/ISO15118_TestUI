@@ -188,12 +188,12 @@ export default {
       //   });
     },
     ...mapMutations([
-      'mutation_update_summary', // map `this.increment()` to `this.$store.commit('increment')`
+      'muta_update_summary', // map `this.increment()` to `this.$store.commit('increment')`
       // `mapMutations` also supports payloads:
-      'mutation_update_testcase_list', // map `this.incrementBy(amount)` to `this.$store.commit('incrementBy', amount)`
-      'mutation_update_execute_testcase',
-      'mutation_update_current_cfg',
-      'mutation_update_default_cfg',
+      'muta_update_testcase_list', // map `this.incrementBy(amount)` to `this.$store.commit('incrementBy', amount)`
+      'muta_update_execute_testcase',
+      'muta_update_current_cfg',
+      'muta_update_default_cfg',
     ]),
   },
 };

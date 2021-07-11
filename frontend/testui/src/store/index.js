@@ -55,41 +55,41 @@ export default new Vuex.Store({
   },
   // synchronous store.commit('increment')
   mutations: {
-    mutation_update_summary(state, payload) {
+    muta_update_summary(state, payload) {
       state.summary_info = Vue.util.extend([], payload.summary_info);
     },
-    mutation_update_testcase_list(state, payload) {
+    muta_update_testcase_list(state, payload) {
       state.testcase_list = Vue.util.extend([], payload.testcase_list);
     },
-    mutation_update_execute_testcase(state, payload) {
-      if (payload.id) {
+    muta_update_execute_testcase(state, payload) {
+      if (payload.id !== undefined) {
         state.execute_testcase.id = payload.id;
       }
-      if (payload.name) {
+      if (payload.name !== undefined) {
         state.execute_testcase.name = payload.name;
       }
-      if (payload.isrunning) {
+      if (payload.isrunning !== undefined) {
         state.execute_testcase.isrunning = payload.isrunning;
       }
     },
-    mutation_update_current_cfg(state, payload) {
+    muta_update_current_cfg(state, payload) {
       state.current_config = { ...payload.current_config};
     },
-    mutation_update_partial_current_cfg(state, payload) {
-      if (payload.pics) {
+    muta_update_partial_current_cfg(state, payload) {
+      if (payload.pics !== undefined) {
         update_config_prop(payload.pics, state.current_config.pics);
       }
-      if (payload.pixit) {
+      if (payload.pixit !== undefined) {
         update_config_prop(payload.pixit, state.current_config.pixit);
       }
-      if (payload.timer) {
+      if (payload.timer !== undefined) {
         update_config_prop(payload.timer, state.current_config.timer);
       }
-      if (payload.slac) {
+      if (payload.slac !== undefined) {
         update_config_prop(payload.slac, state.current_config.slac);
       }
     },
-    mutation_update_default_cfg(state, payload) {
+    muta_update_default_cfg(state, payload) {
       state.default_config = { ...payload.default_config};
     },
   },
@@ -105,7 +105,7 @@ export default new Vuex.Store({
     // action_dispatch_exec_testcase(context, payload) {
     // }
     action_update_current_tc(context, payload) {
-      context.commit('mutation_update_execute_testcase', payload)
+      context.commit('muta_update_execute_testcase', payload)
     }
   },
   // getter's result is cached based on its dependencies, and will only re-evaluate when some of its dependencies have changed.
