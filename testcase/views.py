@@ -1,6 +1,7 @@
 import collections
 from typing import Any
 import django
+from django.db.models.query import QuerySet
 from django.shortcuts import redirect, render, get_object_or_404
 from django.core.files.storage import default_storage
 from django.core.files.base import ContentFile
@@ -44,12 +45,19 @@ class TestcaseViewSet(viewsets.ModelViewSet):
 
     def list(self, request, *args, **kwargs):
         queryset = self.filter_queryset(self.get_queryset())
-        page = self.paginate_queryset(queryset)
-        if page is not None:
-            serializer = self.get_serializer(page, many=True)
-            return self.get_paginated_response(serializer.data)
-        serializer = self.get_serializer(queryset, many=True)
-        return Response(serializer.data)
+        if (queryset.count() > 1):
+            page = self.paginate_queryset(queryset)
+            if page is not None:
+                serializer = self.get_serializer(page, many=True)
+                return self.get_paginated_response(serializer.data)
+            serializer = self.get_serializer(queryset, many=True)
+            return Response(serializer.data)
+        elif (queryset.count() == 0):
+            return Response(status=status.HTTP_404_NOT_FOUND)
+        else:
+            queryset = queryset.first()
+            serializer = self.get_serializer(queryset, many=False)
+            return Response(serializer.data)
 
     def retrieve(self, request, *args, **kwargs):
         return super().retrieve(request, *args, **kwargs)

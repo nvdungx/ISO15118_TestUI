@@ -1,28 +1,30 @@
 import axios from 'axios';
-import dotenv from 'dotenv'
+// import dotenv from 'dotenv'
 
-const result = dotenv.config();
+// const result = dotenv.config();
+// if (result.error) {
+//   throw result.error
+// }
+// var SERVER_ADDRESS = process.env.SERVER_ADDRESS;
+// var SERVER_PORT = process.env.SERVER_PORT;
+// var VERSION = process.env.API_VERSION;
 
-var SERVER_ADDRESS = process.env.SERVER_ADDRESS;
-var SERVER_PORT = process.env.SERVER_PORT;
-var VERSION = process.env.API_VERSION;
-console.log(SERVER_ADDRESS, SERVER_PORT);
+var SERVER_BASE_URL = "http://127.0.0.1:8000/api/v1";
 
-var SERVER_BASE_URL = "http://127.0.0.1:8000";
-
-if ((SERVER_ADDRESS !== null) && (SERVER_PORT !== null)) {
-  SERVER_BASE_URL = `http://${SERVER_ADDRESS}:${SERVER_PORT}/api/${VERSION}`;
-}
+// if ((SERVER_ADDRESS !== undefined) && (SERVER_PORT !== undefined)) {
+//   SERVER_BASE_URL = `http://${SERVER_ADDRESS}:${SERVER_PORT}/api/${VERSION}`;
+// }
 const config = {
   baseURL: SERVER_BASE_URL,
   headers: {
     'Content-Type': 'application/json'
-  }
+  },
+  timeout: 1000
 }
 const instance = axios.create(config)
 
-const getRequest = function (url, data, resolve, reject) {
-  instance.get(url, data)
+const getRequest = function (url, param, resolve, reject) {
+  instance.get(url, {params:param})
     .then(res => {
       resolve(res)
     })
@@ -40,16 +42,6 @@ const postRequest = function (url, data, resolve, reject) {
       reject(error)
     })
 }
-
-const deleteRequest = function(url, data, resolve, reject) {
-  instance.delete(url, data)
-    .then(res => {
-      resolve(res);
-    })
-    .catch(error => {
-      reject(error);
-    });
-};
 
 const putRequest = function (url, data, resolve, reject) {
   instance.put(url, data)
@@ -71,10 +63,20 @@ const patchRequest = function (url, data, resolve, reject) {
     })
 }
 
+const deleteRequest = function(url, resolve, reject) {
+  instance.delete(url)
+    .then(res => {
+      resolve(res);
+    })
+    .catch(error => {
+      reject(error);
+    });
+};
+
 export default {
   getRequest,
   postRequest,
-  deleteRequest,
   putRequest,
   patchRequest,
+  deleteRequest,
 }

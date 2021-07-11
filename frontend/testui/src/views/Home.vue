@@ -5,7 +5,7 @@
         <v-card-title>ISO15118-2 Messages </v-card-title>
         <v-data-table
           :headers="headers"
-          :items="this.getter_get_summary"
+          :items="this.get_summary"
           :items-per-page="-1"
           :disable-pagination="true"
           :hide-default-footer="true"
@@ -30,28 +30,21 @@
 </template>
 
 <script>
-import TestcaseDataSerivce from "../services/testcase-data-serivce";
-import { mapMutations, mapGetters } from 'vuex';
+import { mapMutations, mapGetters, mapActions } from "vuex";
 
 export default {
   name: "Home",
   component: {},
-  watch: {
-  },
+  watch: {},
   computed: {
     // mix the getters into computed with object spread operator
-    ...mapGetters([
-      "getter_get_schema",
-      "getter_get_summary",
-      "getter_get_testcase_list",
-      "getter_get_current_execute_tc",
-      "getter_get_default_config",
-      "getter_get_current_config",
-    ]),
+    ...mapGetters(["get_summary"]),
   },
   mounted() {
     this.retrieveSummary();
   },
+  // When a Vue instance is created, it adds all the properties found in its data object to Vue’s reactivity system.
+  // When the values of those properties change, the view will “react”, updating to match the new values.
   data() {
     return {
       isLoading: false,
@@ -66,29 +59,23 @@ export default {
   methods: {
     retrieveSummary() {
       this.isLoading = true;
-      TestcaseDataSerivce.getSummary()
-        .then((response) => {
-          // this.summary = response.data;
-          this.muta_update_summary({summary_info: response.data});
+      this.act_get_summary()
+        .then(() => {
           this.isLoading = false;
         })
-        .catch((e) => {
+        .catch(() => {
           this.isLoading = false;
-          console.log(e);
         });
     },
     selectMsg(value) {
       var msg_name = value.name.replace("TestCases_SECC_", "");
-      this.$router.push({ name: "testcase-list", query: { msg_type: msg_name } });
+      this.$router.push({
+        name: "testcase-list",
+        query: { msg_type: msg_name },
+      });
     },
-    ...mapMutations([
-      'muta_update_summary', // map `this.increment()` to `this.$store.commit('increment')`
-      // `mapMutations` also supports payloads:
-      'muta_update_testcase_list', // map `this.incrementBy(amount)` to `this.$store.commit('incrementBy', amount)`
-      'muta_update_execute_testcase',
-      'muta_update_current_cfg',
-      'muta_update_default_cfg',
-    ]),
+    ...mapMutations([]),
+    ...mapActions(["act_get_summary"]),
   },
 };
 </script>

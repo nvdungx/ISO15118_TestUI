@@ -115,12 +115,12 @@ export default {
   computed: {
     // mix the getters into computed with object spread operator
     ...mapGetters([
-      "getter_get_schema",
-      "getter_get_summary",
-      "getter_get_testcase_list",
-      "getter_get_current_execute_tc",
-      "getter_get_default_config",
-      "getter_get_current_config",
+      "get_schema",
+      "get_summary",
+      "get_testcase_list",
+      "get_current_execute_tc",
+      "get_default_config",
+      "get_current_config",
     ]),
   },
   data() {

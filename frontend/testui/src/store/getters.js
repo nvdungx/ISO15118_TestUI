@@ -9,7 +9,7 @@ export default {
         return state.testcase_list;
     },
     get_testcase_by_id: (state) => (id) => {
-        return state.testcase_list.find(testcase => testcase.id === id);
+        return state.testcase_list.find(testcase => testcase.id === parseInt(id));
     },
     get_testcase_by_name: (state) => (name) => {
         // return undefined if not found

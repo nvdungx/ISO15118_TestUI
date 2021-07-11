@@ -14,7 +14,7 @@
         </v-card-title>
         <v-data-table
           :headers="headers"
-          :items="this.getter_get_testcase_list"
+          :items="this.get_testcase_list"
           :search="search"
           :loading="isLoading"
           loading-text="Loading... Please wait"
@@ -48,11 +48,13 @@
 
 <script>
 import TestcaseDataSerivce from "../services/testcase-data-serivce";
-import { mapMutations, mapGetters } from 'vuex';
+import { mapMutations, mapGetters, mapActions } from 'vuex';
+import com_mixin from "../components/shared_mixin";
 
 export default {
   name: "TestcaseList",
   components: {},
+  mixins: [com_mixin],
   watch: {
     '$route.params': 'refreshList'
   },
@@ -64,12 +66,9 @@ export default {
   computed: {
     // mix the getters into computed with object spread operator
     ...mapGetters([
-      "getter_get_schema",
-      "getter_get_summary",
-      "getter_get_testcase_list",
-      "getter_get_current_execute_tc",
-      "getter_get_default_config",
-      "getter_get_current_config",
+      "get_testcase_list",
+      "get_current_execute_tc",
+      "get_current_config",
     ]),
   },
   data() {
@@ -97,7 +96,7 @@ export default {
   },
   methods: {
     isExecuted(id) {
-      if ((id === this.getter_get_current_execute_tc.id) && (this.getter_get_current_execute_tc.isrunning)) {
+      if ((id === this.get_current_execute_tc.id) && (this.get_current_execute_tc.isrunning)) {
         return 'green';
       }
       else {
@@ -121,121 +120,55 @@ export default {
     refreshList() {
       this.isLoading = true;
       // check route push has query param msg_type
-      if (this.$route.query.msg_type) {
-        // trigger get find by name
-        TestcaseDataSerivce.findByMsgType(this.$route.query.msg_type)
-          .then((response) => {
-            this.muta_update_testcase_list({testcase_list: response.data});
-            this.isLoading = false;
-          })
-          .catch((e) => {
-            console.log(e.response);
-            this.isLoading = false;
-          });
+      var query_params = {}
+      if (this.$route.query.msg_type !== undefined) {
+        query_params = {msg_type: this.$route.query.msg_type}
       }
-      else {
-        // get all testcase
-        TestcaseDataSerivce.getAll()
-          .then((response) => {
-            this.muta_update_testcase_list({testcase_list: response.data});
-            this.isLoading = false;
-          })
-          .catch((e) => {
-            console.log(e.response);
-            this.isLoading = false;
-          });
-      }
+      // trigger get find by name
+      this.act_get_testcases(query_params)
+        .then(() => {
+          this.isLoading = false;
+        })
+        .catch(() => {
+          this.isLoading = false;
+        });
     },
     editTestcase(id) {
       this.$router.push({ name: "testcase-detail", params: { id: id } });
     },
     deleteTestcase(id) {
       console.log(`delete testcase id ${id}`);
-      // TestcaseDataSerivce.delete(id)
-      //   .then((response) => {
-      //     this.refreshList();
-      //   })
-      //   .catch((e) => {
-      //     console.log(e.response);
-      //   });
     },
     executeTestcase(testcase) {
-      // testcase object
-      // build_status: (...)
-      // condition: (...)
-      // expected: (...)
-      // id: (...)
-      // name: (...)
-      // path: (...)
-      // pics: (...)
-      // pixit: (...)
-      // status: (...)
-      // type: (...)
       // check no testcase running then update data and execute
-      if (this.getter_get_current_execute_tc.isrunning == false) {
+      if (this.get_current_execute_tc.isrunning == false) {
         this.muta_update_execute_testcase({id: testcase.id, name: testcase.name, isrunning: true})
         // parse config pics, pixit string and update config data
-        var config_json = ['', ''];
-        [testcase.pics, testcase.pixit].forEach((config, index) =>{
-          config_json[index] = "{";
-          // replace all \n and split by ,
-          config.replaceAll(/\n/g, '').split(",").forEach(element => {
-            // split key and value
-            var items = element.split("=");
-            // if not empty
-            if (items.length > 1) {
-              config_json[index] += `"${items[0].trim()}":"${items[1].trim()}",`;
-            }
-          });
-          if (config_json[index].length > 1) {
-            config_json[index] = config_json[index].slice(0, -1) + "}";
-          }
-          else {
-            config_json[index] += "}";
-          }
-          config_json[index] = JSON.parse(config_json[index]);
-        });
-        // call mutation to update current config with testcase specific
-        this.muta_update_partial_current_cfg({pics: config_json[0], pixit: config_json[1]})
-        TestcaseDataSerivce.execute(testcase.id, this.getter_get_current_config)
+        this.muta_update_partial_current_cfg(this.parseTestcaseConfig(testcase.pics, testcase.pixit));
+        TestcaseDataSerivce.execute(this.get_current_execute_tc.id, this.getIntConfig(this.get_current_config, this.$store.state.SCHEMA))
           .then((response) => {
-            console.log(response);
-            // trigger websocket to monitoring execution
+            if (response.status == 200) {
+              // trigger websocket to monitoring execution
+              console.log(`execute testcase`);
+            }
           })
           .catch((e) => {
-            console.log(e.response);
+            console.log(e);
           });
+      }
+      else {
+        alert(`Testcase ${this.get_current_execute_tc.name} is in execution`);
       }
     },
     ...mapMutations([
-      'muta_update_summary', // map `this.increment()` to `this.$store.commit('increment')`
-      // `mapMutations` also supports payloads:
-      'muta_update_testcase_list', // map `this.incrementBy(amount)` to `this.$store.commit('incrementBy', amount)`
+      'muta_update_testcase_list',
       'muta_update_execute_testcase',
-      'muta_update_current_cfg',
-      'muta_update_default_cfg',
       'muta_update_partial_current_cfg',
     ]),
+    ...mapActions([
+      'act_get_testcases',
+    ]),
   },
-  // beforeRouteEnter(to, from, next) {
-  //   // called before the route that renders this component is confirmed.
-  //   // does NOT have access to `this` component instance,
-  //   // because it has not been created yet when this guard is called!
-  //   console.log([to, from, next]);
-  // },
-  // beforeRouteUpdate(to, from, next) {
-  //  // called when the route that renders this component has changed.
-  //  // This component being reused (by using an explicit `key`) in the new route or not doesn't change anything.
-  //  // For example, for a route with dynamic params `/foo/:id`, when we
-  //  // navigate between `/foo/1` and `/foo/2`, the same `Foo` component instance
-  //  // will be reused (unless you provided a `key` to `<router-view>`), and this hook will be called when that happens.
-  //  // has access to `this` component instance.
-  // },
-  // beforeRouteLeave(to, from, next) {
-  //   // called when the route that renders this component is about to
-  //   // be navigated away from.
-  //   // has access to `this` component instance.
-  // }
 };
 </script>
 

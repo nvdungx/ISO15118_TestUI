@@ -16,10 +16,14 @@ function update_config_prop(input, target) {
 
 export default {
     muta_update_summary(state, payload) {
-        state.summary_info = Vue.util.extend([], payload.summary_info);
+        if (payload.summary_info !== undefined) {
+            state.summary_info = Vue.util.extend([], payload.summary_info);
+        }
     },
     muta_update_testcase_list(state, payload) {
-        state.testcase_list = Vue.util.extend([], payload.testcase_list);
+        if (payload.testcase_list !== undefined) {
+            state.testcase_list = Vue.util.extend([], payload.testcase_list);
+        }
     },
     muta_update_execute_testcase(state, payload) {
         if (payload.id !== undefined) {
@@ -53,8 +57,10 @@ export default {
         }
     },
     muta_update_default_cfg(state, payload) {
-        state.default_config = {
-            ...payload.default_config
-        };
+        if (payload.default_config !== undefined) {
+            state.default_config = {
+                ...payload.default_config
+            };
+        }
     },
 }

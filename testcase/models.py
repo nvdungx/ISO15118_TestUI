@@ -76,8 +76,5 @@ class TestcaseType(BaseModel):
     msg_type = models.ForeignKey('MessageType', on_delete=models.SET_NULL, null=True)
     objects = TestcaseManager()
 
-    def __str__(self) -> str:
-        return f"{self.name}"
-
     def get_absolute_url(self):
         return reverse('testcase-detail', args=[str(self.id)])

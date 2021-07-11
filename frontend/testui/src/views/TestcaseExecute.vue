@@ -8,26 +8,30 @@
             <v-row dense>
               <v-col cols="2">
                 <v-text-field
-                  v-model="target_testcase.id"
-                  :rules="[(v) => !!v || 'Testcase ID is required']"
+                  v-model.lazy="target_testcase_id"
+                  :rules="[verifyId]"
+                  :error-messages="this.err_msg_validate_id"
+                  validate-on-blur
                   label="Testcase ID"
                   rows="1"
                   required outlined auto-grow dense
                   loader-height=5
-                  :loading="this.getter_get_current_execute_tc.isrunning? 'green':false"
-                  :readonly="this.getter_get_current_execute_tc.isrunning"
+                  :loading="this.get_current_execute_tc.isrunning? 'green':false"
+                  :readonly="this.get_current_execute_tc.isrunning"
                 ></v-text-field>
               </v-col>
               <v-col cols="10">
                 <v-text-field
-                  v-model="target_testcase.name"
-                  :rules="[(v) => !!v || 'Testcase name is required']"
+                  v-model.lazy="target_testcase_name"
+                  :rules="[verifyTestcaseName]"
+                  :error-messages="this.err_msg_validate_name"
+                  validate-on-blur
                   label="Testcase name"
                   rows="1"
                   required outlined auto-grow dense
                   loader-height=5
-                  :loading="this.getter_get_current_execute_tc.isrunning? 'green':false"
-                  :readonly="this.getter_get_current_execute_tc.isrunning"
+                  :loading="this.get_current_execute_tc.isrunning? 'green':false"
+                  :readonly="this.get_current_execute_tc.isrunning"
                 ></v-text-field>
               </v-col>
             </v-row>
@@ -45,12 +49,12 @@
             </v-card-actions>
             <v-card-actions>
               <v-btn color="success"
-              :disabled="this.getter_get_current_execute_tc.isrunning"
+              :disabled="(!this.validExecuteFlag) || !this.valid_testcase"
               @click="executeTestcase">Execute</v-btn>
             </v-card-actions>
             <v-card-actions>
               <v-btn color="orange"
-              :disabled="!this.getter_get_current_execute_tc.isrunning"
+              :disabled="!this.validCancelFlag"
               @click="cancelTestcase">Cancel</v-btn>
             </v-card-actions>
           </v-row>
@@ -93,44 +97,40 @@
 <script>
 import TestcaseDataSerivce from "../services/testcase-data-serivce";
 import { mapGetters, mapMutations, mapActions } from "vuex";
+import com_mixin from "../components/shared_mixin";
 
 import Vue from "vue";
 
 export default {
   name: "TestcaseExecute",
   components: {},
+  mixins: [com_mixin],
   watch: {
     // watch change
-    // 'configuration.pics': function () {
-    //   console.log(this.configuration.pics);
-    //   console.log(this.getter_get_current_config.pics);
-    // },
+  },
+  mounted() {
+    this.target_testcase_id = this.get_current_execute_tc.id;
+    this.target_testcase_name = this.get_current_execute_tc.name;
+    this.valid_testcase = (this.get_current_execute_tc.id !== '') && (this.get_current_execute_tc.name !== '');
   },
   computed: {
     // mix the getters into computed with object spread operator
+    validExecuteFlag: function () {
+      return ((this.get_current_execute_tc.isrunning == false) && (this.get_current_execute_tc.id !== '') && (this.get_current_execute_tc.name !== ''))
+    },
+    validCancelFlag: function () {
+      return ((this.get_current_execute_tc.isrunning == true) && (this.get_current_execute_tc.id !== '') && (this.get_current_execute_tc.name !== ''))
+    },
     ...mapGetters([
-      "getter_get_schema",
-      "getter_get_summary",
-      "getter_get_testcase_list",
-      "getter_get_current_execute_tc",
-      "getter_get_default_config",
-      "getter_get_current_config",
+      "get_schema",
+      "get_current_execute_tc",
+      "get_default_config",
+      "get_current_config",
+      "get_testcase_by_id",
+      "get_testcase_by_name"
     ]),
   },
-  beforeCreate() {
-    //console.log("before created");
-  },
-  created() {
-    // console.log("created");
-  },
-  beforeMount() {
-    // console.log("before mount");
-  },
-  mounted() {
-    // console.log("mounted");
-  },
   updated() {
-    // console.log("update");
     if (this.$store.state.default_config === null) {
         // store default config (default config create from schema)
         this.muta_update_default_cfg({default_config: this.configuration});
@@ -138,7 +138,7 @@ export default {
   },
   data() {
     return {
-      PICS_SCHEMA: this.$store.state.SCHEMA.PICS, // this.getter_get_schema('PICS') cann't call like this because computed not exist yet?
+      PICS_SCHEMA: this.$store.state.SCHEMA.PICS, // this.get_schema('PICS') cann't call like this because computed not exist yet?
       PIXIT_SCHEMA: this.$store.state.SCHEMA.PIXIT,
       TIMER_SCHEMA: this.$store.state.SCHEMA.TIMER,
       SLAC_SCHEMA: this.$store.state.SCHEMA.SLAC,
@@ -147,15 +147,73 @@ export default {
         editMode: "inline",
       },
       configuration: this.$store.state.current_config,
-      target_testcase: this.$store.state.execute_testcase,
+      target_testcase_id: "",
+      target_testcase_name: "",
+      valid_testcase: false,
+      err_msg_validate_name: "",
+      err_msg_validate_id: ""
     };
   },
   methods: {
-    verify_id(id) {
-      console.log(id);
+    loadReturnTestcase(testcase) {
+      if (this.get_current_execute_tc.isrunning == false) {
+        this.target_testcase_id = testcase.id;
+        this.target_testcase_name = testcase.name;
+        this.get_current_execute_tc.id = testcase.id;
+        this.get_current_execute_tc.name = testcase.name;
+        this.muta_update_partial_current_cfg(this.parseTestcaseConfig(testcase.pics, testcase.pixit));
+        this.err_msg_validate_id = '';
+        this.err_msg_validate_name = '';
+        this.valid_testcase = true;
+      }
     },
-    verify_testcase_name(name) {
-      console.log(name);
+    verifyId(value) {
+      if (value !== '' && value !== null && value!== undefined) {
+        var tc = this.get_testcase_by_id(value);
+        if (undefined !== tc) {
+          this.loadReturnTestcase(tc);
+          return true;
+        }
+        else {
+          this.act_get_testcase_id(value)
+            .then((testcase) => {
+              this.loadReturnTestcase(testcase);
+            })
+            .catch(() => {
+              this.valid_testcase = false;
+              this.err_msg_validate_id = "Testcase ID is not existed";
+            });
+          return true;
+        }
+      }
+      else {
+        this.valid_testcase = false;
+        return "Testcase ID is required";
+      }
+    },
+    verifyTestcaseName(value) {
+      if (value !== '' && value !== null && value!== undefined) {
+        var tc = this.get_testcase_by_name(value);
+        if (undefined !== tc) {
+          this.loadReturnTestcase(tc);
+          return true;
+        }
+        else {
+          this.act_get_testcase_name(value)
+            .then((testcase) => {
+              this.loadReturnTestcase(testcase);
+            })
+            .catch(() => {
+              this.valid_testcase = false;  
+              this.err_msg_validate_name = "Testcase name is not existed";
+            });
+          return true;
+        }
+      }
+      else {
+        this.valid_testcase = false;
+        return "Testcase name is required";
+      }
     },
     //  v-jsf @change="logEvent('slac', $event)"
     // logEvent(key, $event) {
@@ -200,36 +258,39 @@ export default {
       e.target.value = null;
     },
     resetConfig() {
-      this.configuration = Vue.util.extend({}, this.getter_get_default_config);
+      this.configuration = Vue.util.extend({}, this.get_default_config);
     },
     executeTestcase() {
-      this.muta_update_execute_testcase({id: this.target_testcase.id, name: this.target_testcase.name, isrunning: true});
-      TestcaseDataSerivce.execute(this.getter_get_current_execute_tc.id, this.configuration)
+      this.muta_update_execute_testcase({id: this.target_testcase_id, name: this.target_testcase_name, isrunning: true});
+      var config = this.getIntConfig(this.configuration, this.$store.state.SCHEMA);
+      console.log(config);
+      console.log(this.configuration);
+      TestcaseDataSerivce.execute(this.get_current_execute_tc.id, config)//this.getIntConfig(this.configuration, this.$store.state.SCHEMA))
         .then((response) => {
           console.log(response);
         })
         .catch((e) => {
-          console.log(e.response);
+          console.log(e);
         });
     },
     cancelTestcase() {
-      TestcaseDataSerivce.execute(this.target_testcase.id, {cancel: true})
-        .then((response) => {
+      TestcaseDataSerivce.execute(this.target_testcase_id, {cancel: true})
+        .then(() => {
           this.muta_update_execute_testcase({id: '', name: '', isrunning: false});
-          console.log(response);
+          this.verifyId(this.target_testcase_id);
         })
         .catch((e) => {
-          console.log(e.response);
+          console.log(e);
         });
     },
     ...mapActions([
-      'action_update_current_tc'
+      'act_get_testcase_id',
+      'act_get_testcase_name',
+      'act_get_testcases',
     ]),
     ...mapMutations([
-      'muta_update_summary', // map `this.increment()` to `this.$store.commit('increment')`
-      // `mapMutations` also supports payloads:
-      'muta_update_testcase_list', // map `this.incrementBy(amount)` to `this.$store.commit('incrementBy', amount)`
       'muta_update_execute_testcase',
+      'muta_update_partial_current_cfg',
       'muta_update_current_cfg',
       'muta_update_default_cfg',
     ]),
