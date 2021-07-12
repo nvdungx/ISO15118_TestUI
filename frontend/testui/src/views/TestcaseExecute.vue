@@ -262,10 +262,10 @@ export default {
     },
     executeTestcase() {
       this.muta_update_execute_testcase({id: this.target_testcase_id, name: this.target_testcase_name, isrunning: true});
-      var config = this.getIntConfig(this.configuration, this.$store.state.SCHEMA);
-      console.log(config);
-      console.log(this.configuration);
-      TestcaseDataSerivce.execute(this.get_current_execute_tc.id, config)//this.getIntConfig(this.configuration, this.$store.state.SCHEMA))
+      var config = this.getConfigInt(this.configuration, this.$store.state.SCHEMA);
+      // console.log(config);
+      // console.log(this.configuration);
+      TestcaseDataSerivce.execute(this.get_current_execute_tc.id, config)
         .then((response) => {
           console.log(response);
         })

@@ -72,27 +72,6 @@
       ],
       "default": "h"
     },
-    "iso1Part4_PhysicalValueType": {
-      "description": "Physical value type",
-      "cppType": "iso1Part4_PhysicalValueType",
-      "type": "object",
-      "additionalProperties": false,
-      "properties": {
-        "multiplier": {
-          "description": "Multiplier value",
-          "type": "integer",
-          "default": 0
-        },
-        "unit": {
-          "$ref": "#/definitions/iso1Part4_UnitSymbolType"
-        },
-        "value_": {
-          "description": "Base value",
-          "type": "integer",
-          "default": 0
-        }
-      }
-    },
     "iso1Part4_VASSECC": {
       "description": "Indication for explicit testing of ServiceDetail message (SUT shall send a serviceList within ServiceDiscoveryRes message) Choice: i) serviceDetail, ii) none_, iii) unknown",
       "cppType": "iso1Part4_VASSECC",
@@ -298,45 +277,6 @@
     "PIXIT_CMN_CMN_MeterReading": {
       "$ref": "#/definitions/iso1Part4_MeterReading"
     },
-    "par_EVBatteryVoltage": {
-      "$ref": "#/definitions/iso1Part4_PhysicalValueType",
-      "default": {
-        "multiplier": 0,
-        "unit": "v",
-        "value_": 300
-      }
-    },
-    "par_EVMaximumVoltageLimit": {
-      "$ref": "#/definitions/iso1Part4_PhysicalValueType",
-      "default": {
-        "multiplier": 0,
-        "unit": "v",
-        "value_": 500
-      }
-    },
-    "par_EVMaximumCurrentLimit": {
-      "$ref": "#/definitions/iso1Part4_PhysicalValueType",
-      "default": {
-        "multiplier": 0,
-        "unit": "a",
-        "value_": 110
-      }
-    },
-    "par_ValidDeviationPerCent": {
-      "description": "Deviation percent of precharge target voltage",
-      "type": "number",
-      "default": 5.0
-    },
-    "par_LoadStartValCurrent": {
-      "description": "Load starting current",
-      "type": "number",
-      "default": 5.0
-    },
-    "par_EVBatteryStepSize": {
-      "description": "Max battery step size",
-      "type": "number",
-      "default": 99.0
-    },
     "PIXIT_SECC_CMN_VAS": {
       "$ref": "#/definitions/iso1Part4_VASSECC"
     },
@@ -405,6 +345,99 @@
     },
     "PIXIT_EVCC_CMN_SAScheduleTupleIDMR": {
       "$ref": "#/definitions/iso1Part4_SAScheduleTupleIDMR"
+    },
+    "par_ValidDeviationPerCent": {
+      "description": "Deviation percent of precharge target voltage",
+      "type": "number",
+      "default": 5.0
+    },
+    "par_LoadStartValCurrent": {
+      "description": "Load starting current",
+      "type": "number",
+      "default": 5.0
+    },
+    "par_EVBatteryStepSize": {
+      "description": "Max battery step size",
+      "type": "number",
+      "default": 99.0
+    },
+    "par_EVBatteryVoltage": {
+      "description": "par_EVBatteryVoltage",
+      "cppType": "iso1Part4_PhysicalValueType",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "multiplier": {
+          "description": "Multiplier value",
+          "type": "integer",
+          "default": 0
+        },
+        "unit": {
+          "$ref": "#/definitions/iso1Part4_UnitSymbolType"
+        },
+        "value_": {
+          "description": "Base value",
+          "type": "integer",
+          "default": 0
+        }
+      },
+      "default": {
+        "multiplier": 0,
+        "unit": "v",
+        "value_": 300
+      }
+    },
+    "par_EVMaximumVoltageLimit": {
+      "description": "par_EVMaximumVoltageLimit",
+      "cppType": "iso1Part4_PhysicalValueType",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "multiplier": {
+          "description": "Multiplier value",
+          "type": "integer",
+          "default": 0
+        },
+        "unit": {
+          "$ref": "#/definitions/iso1Part4_UnitSymbolType"
+        },
+        "value_": {
+          "description": "Base value",
+          "type": "integer",
+          "default": 0
+        }
+      },
+      "default": {
+        "multiplier": 0,
+        "unit": "v",
+        "value_": 500
+      }
+    },
+    "par_EVMaximumCurrentLimit": {
+      "description": "par_EVMaximumCurrentLimit",
+      "cppType": "iso1Part4_PhysicalValueType",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "multiplier": {
+          "description": "Multiplier value",
+          "type": "integer",
+          "default": 0
+        },
+        "unit": {
+          "$ref": "#/definitions/iso1Part4_UnitSymbolType"
+        },
+        "value_": {
+          "description": "Base value",
+          "type": "integer",
+          "default": 0
+        }
+      },
+      "default": {
+        "multiplier": 0,
+        "unit": "a",
+        "value_": 110
+      }
     }
   },
   "required": [

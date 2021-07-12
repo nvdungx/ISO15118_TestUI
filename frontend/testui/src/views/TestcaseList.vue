@@ -145,7 +145,8 @@ export default {
         this.muta_update_execute_testcase({id: testcase.id, name: testcase.name, isrunning: true})
         // parse config pics, pixit string and update config data
         this.muta_update_partial_current_cfg(this.parseTestcaseConfig(testcase.pics, testcase.pixit));
-        TestcaseDataSerivce.execute(this.get_current_execute_tc.id, this.getIntConfig(this.get_current_config, this.$store.state.SCHEMA))
+        var config = this.getConfigInt(this.get_current_config, this.$store.state.SCHEMA)
+        TestcaseDataSerivce.execute(this.get_current_execute_tc.id, config)
           .then((response) => {
             if (response.status == 200) {
               // trigger websocket to monitoring execution

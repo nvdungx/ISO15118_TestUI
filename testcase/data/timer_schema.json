@@ -8,37 +8,37 @@
   "additionalProperties": false,
   "properties": {
     "par_TP_EV_vald_state_duration": {
-      "description": "",
+      "description": "Time period in each BCB state",
       "type": "number",
       "exclusiveMinimum": 0,
       "default": 0.25
     },
     "par_T_conn_max_comm": {
-      "description": "",
+      "description": "Connection max timeout",
       "type": "number",
       "exclusiveMinimum": 0,
       "default": 10
     },
     "par_CMN_Transmission_Delay": {
-      "description": "",
+      "description": "Transmission delay between each msg",
       "type": "number",
       "exclusiveMinimum": 0,
       "default": 0.25
     },
     "par_CMN_HAL_Timeout": {
-      "description": "",
+      "description": "Timeout value when HAL state transition does not occur",
       "type": "number",
       "exclusiveMinimum": 0,
       "default": 2.0
     },
     "par_CMN_waitForNextHAL": {
-      "description": "",
+      "description": "Delay period before transition to ext state",
       "type": "number",
       "exclusiveMinimum": 0,
       "default": 0.5
     },
     "par_CMN_Intern_PTC_Timeout": {
-      "description": "",
+      "description": "Internal Parallel Test Component timeout",
       "type": "number",
       "exclusiveMinimum": 0,
       "default": 0.4
@@ -50,31 +50,31 @@
       "default": 3.0
     },
     "par_EVCC_waitForNextTC": {
-      "description": "",
+      "description": "Delay between each testcase executionn",
       "type": "number",
       "exclusiveMinimum": 0,
       "default": 2.0
     },
     "par_SECC_waitForNextTC": {
-      "description": "",
+      "description": "Delay between each testcase execution",
       "type": "number",
       "exclusiveMinimum": 0,
       "default": 5.0
     },
     "par_SECC_T_step_X1": {
-      "description": "",
+      "description": "Timer value for state X1",
       "type": "number",
       "exclusiveMinimum": 0,
       "default": 3.0
     },
     "par_SECC_Pmax0W": {
-      "description": "",
+      "description": "SECC PMAX value",
       "type": "number",
       "exclusiveMinimum": 0,
       "default": 200.0
     },
     "par_V2G_SECC_Sequence_Timeout": {
-      "description": "",
+      "description": "Sequence msg timeout value",
       "type": "number",
       "exclusiveMinimum": 0,
       "default": 60.0
@@ -230,7 +230,7 @@
       "default": 1.25
     },
     "par_SECC_B1_B2_Timeout": {
-      "description": "",
+      "description": "Timeout value when not detect transition from B1-B2",
       "type": "number",
       "exclusiveMinimum": 0,
       "default": 8.0
@@ -242,19 +242,19 @@
       "default": 0.25
     },
     "par_V2G_SECC_CPState_Error_Detection_Timeout": {
-      "description": "",
+      "description": "Timeout value when expected ERROR CP State is not detected",
       "type": "number",
       "exclusiveMinimum": 0,
       "default": 1.5
     },
     "par_V2G_SECC_CPState_Detection_Timeout": {
-      "description": "",
+      "description": "Timeout value when expected CP State is not detected",
       "type": "number",
       "exclusiveMinimum": 0,
       "default": 0.25
     },
     "par_CMN_TCP_Connection_Termination_Timeout": {
-      "description": "",
+      "description": "Timeout value when no TCP connection is available",
       "type": "number",
       "exclusiveMinimum": 0,
       "default": 5.0

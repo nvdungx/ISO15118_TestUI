@@ -19,8 +19,9 @@ from rest_framework.parsers import JSONParser, MultiPartParser
 from .models import TestcaseType, MessageType
 from .serializers import MessageSerializer, TestcaseSerializer
 import re
-import dataclasses
-from collections import defaultdict, namedtuple
+import json
+import multiprocessing
+
 
 # Create your views here.
 
@@ -75,9 +76,10 @@ class TestcaseExecute(mixins.UpdateModelMixin,viewsets.GenericViewSet):
                 # check if testcase is available and cancel
             else:
                 print(f"exec{pk}")
-                cfg_path = self.parse_config(request.data)
+                v2g_path, slac_path = self.parse_config(request.data)
                 # save json config file to /tmp/
                 # call execute
+                 
                 # tc.path tc.name cfg_path
                 # stream data back socket?
                 # store log file
@@ -86,9 +88,27 @@ class TestcaseExecute(mixins.UpdateModelMixin,viewsets.GenericViewSet):
             return Response(str(e.args), status.HTTP_417_EXPECTATION_FAILED)
 
     def parse_config(self, test_config):
-        pics = test_config["pics"]
-        pixit = test_config["pixit"]
-        return None
+        v2g_config = {
+            "timer": test_config["timer"],
+            "pics": test_config["pics"],
+            "pixit": test_config["pixit"]
+        }
+        v2g_path = "./v2g_config.json"
+        with open(v2g_path, "w", encoding="utf-8") as fp:
+            json.dump(v2g_config, fp, indent=4)
+        slac_config = {
+            "timer": {},
+            "threshold": {}
+        }
+        for k, v in test_config["slac"].items():
+            if ("C_" == k[:2] ):
+                slac_config["threshold"][k] = v
+            else:
+                slac_config["timer"][k] = v
+        slac_path = "./slac_config.json"
+        with open(slac_path, "w", encoding="utf-8") as fp:
+            json.dump(slac_config, fp, indent=4)
+        return v2g_path, slac_path
 
 class SummaryViewSet(viewsets.GenericViewSet):
     queryset = MessageType.objects.all()

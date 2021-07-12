@@ -23,58 +23,52 @@ var comMixin = {
             });
             return {pics: config_json[0], pixit: config_json[1]};
         },
-        getIntConfig: function (input_config, schema) {
-          var send_config = {...input_config};
-          Object.getOwnPropertyNames(send_config).forEach(element => {
-            // console.log(`------${element}--------`);
-            Object.getOwnPropertyNames(input_config[element]).forEach(key => {
-              // if type of key value === string
-              if (typeof input_config[element][key] === 'string' || input_config[element][key] instanceof String) {
-                if (Object.prototype.hasOwnProperty.call(schema[element.toUpperCase()].properties[key],"enum"))
-                {
-                  var result = schema[element.toUpperCase()].properties[key]["enum"].findIndex((val) => { return (val === input_config[element][key]); });
-                  if (result !== -1) {
-                    send_config[element][key] = result;
-                    // console.log(input_config[element][key], " in ", schema[element.toUpperCase()].properties[key]["enum"], send_config[element][key]);
-                  }
-                  else {
-                    send_config[element][key] = input_config[element][key];
-                    // console.log("Fail enum string", send_config[element][key])
+        __getLeafProp(input_obj, leaf_schema, root_schema) {
+          Object.keys(input_obj).forEach( (prop) => {
+            if (typeof input_obj[prop] === 'string' || input_obj[prop] instanceof String) {
+              // base, get int value
+              // // console.log('check: ', prop, input_obj[prop]);
+              if (leaf_schema['properties'][prop]['enum'] !== undefined) {
+                // // console.log('enum: ', leaf_schema['properties'][prop]['enum'])
+                let result = leaf_schema['properties'][prop]['enum'].findIndex((val) => { return (val === input_obj[prop]); });
+                input_obj[prop] = result;
+              }
+              else if (leaf_schema['properties'][prop]['$ref'] !== undefined) {
+                let obj = root_schema
+                // // console.log('REF: ', prop, leaf_schema['properties'][prop]['$ref'])
+                for (let key of leaf_schema['properties'][prop]['$ref'].split('/')) {
+                  if (key !== "#") {
+                    obj = obj[key]
                   }
                 }
-                else {
-                  // console.log("Warning: String value is not belong enum");
-                  send_config[element][key] = input_config[element][key];
+                if (obj['enum'] !== undefined) {
+                  // // console.log('enum $ref: ', obj['enum'])
+                  let result_ref = obj['enum'].findIndex((val) => { return (val === input_obj[prop]); });
+                  input_obj[prop] = result_ref;
                 }
               }
-              else if (schema[element.toUpperCase()].properties[key].type === 'object') {
-                Object.getOwnPropertyNames(input_config[element][key]).forEach(sub_key => {
-                  if (typeof input_config[element][key][sub_key] === 'string' || input_config[element][key][sub_key] instanceof String)
-                  {
-                    var result = schema[element.toUpperCase()].properties[key].properties[sub_key]["enum"].findIndex((val) => { return (val === input_config[element][key][sub_key]); });
-                    if (result !== -1) {
-                      send_config[element][key][sub_key] = result;
-                      // console.log(input_config[element][key][sub_key], " in ", schema[element.toUpperCase()].properties[key].properties[sub_key]["enum"], send_config[element][key][sub_key]);
-                    }
-                    else {
-                      send_config[element][key][sub_key] = input_config[element][key][sub_key];
-                      // console.log("Fail enum string", send_config[element][key][sub_key])
-                    }
-                  }
-                  else {
-                    send_config[element][key][sub_key] = input_config[element][key][sub_key];
-                  }
-                });
+            }
+            else if (typeof input_obj[prop] === 'object' || input_obj[prop] instanceof Object) {
+              var next_schema = leaf_schema['properties'][prop]
+              this.__getLeafProp(input_obj[prop], next_schema, root_schema);
+            }
+            else if (Array.isArray(input_obj[prop])) {
+              for(let i = 0, l = input_obj[prop].length; i < l; i++) {
+                this.__getLeafProp(input_obj[prop][i], leaf_schema, root_schema);
               }
-              else {
-                send_config[element][key] = input_config[element][key];
-                // console.log(key, send_config[element][key]);
-              }
-            });
+            }
+            else {
+              // pass
+            }
           });
-          // console.log(send_config);
+        },
+        getConfigInt: function (input_config, schema) {
+          var send_config = {...input_config};
+          for (const section in send_config) {
+            this.__getLeafProp(send_config[section], schema[section.toUpperCase()], schema[section.toUpperCase()]);
+          }
           return send_config;
-        }
+        },
     },
 };
 

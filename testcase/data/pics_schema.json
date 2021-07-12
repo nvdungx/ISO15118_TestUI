@@ -109,7 +109,7 @@
         "NA",
         "none_"
       ],
-      "default": "none_"
+      "default": "C"
     }
   },
   "type": "object",
@@ -207,8 +207,7 @@
       "default": 0
     },
     "PICS_SECC_CMN_EvStateInChargeProgress": {
-      "$ref": "#/definitions/IEC_61851_States",
-      "default": "C"
+      "$ref": "#/definitions/IEC_61851_States"
     },
     "PICS_SECC_DC_WeldingDetection": {
       "description": "Indication for explicit testing of WeldingDetection",
