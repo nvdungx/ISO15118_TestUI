@@ -24,6 +24,11 @@ const routes = [
     path: "/execute",
     name: "testcase-execute",
     component: () => import("../views/TestcaseExecute.vue")
+  },
+  {
+    path: "/new",
+    name: "testcase-new",
+    component: () => import("../views/TestcaseNew.vue")
   }
 ]
 

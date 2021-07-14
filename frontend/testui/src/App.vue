@@ -10,6 +10,10 @@
       <v-btn to="/testcases" text>
         Testcases
       </v-btn>
+      
+      <v-btn to="/new" text>
+        New
+      </v-btn>
 
       <v-btn to="/execute" text>
         Execute

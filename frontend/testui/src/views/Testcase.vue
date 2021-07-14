@@ -7,8 +7,10 @@
 
             <v-form ref="form" lazy-validation>
               <v-text-field
-                v-model="currentTestcase.name"
-                :rules="[(v) => !!v || 'Title is required']"
+                v-model.lazy="currentTestcase.name"
+                validate-on-blur
+                readonly
+                :error-messages="this.validateTestcaseFlag.error_msg"
                 label="Testcase"
                 rows="1"
                 required
@@ -80,11 +82,8 @@
               <v-divider class="my-5"></v-divider>
 
               <v-btn color="primary" small class="mr-2" @click="executeTestcase" > Execute </v-btn>
-
               <v-btn color="primary" small class="mr-2" @click="showTestcaseLogs" > ViewLogs </v-btn>
-
               <v-btn color="success" small class="mr-2" @click="updateTestcase"> Update </v-btn>
-
               <v-btn color="error" small class="mr-2" @click="deleteTestcase"> Delete </v-btn>
             </v-form>
           </div>
@@ -98,12 +97,13 @@
 </template>
 
 <script>
-import TestcaseDataSerivce from "../services/testcase-data-serivce";
-import { mapMutations, mapGetters } from 'vuex';
+import { mapMutations, mapGetters, mapActions } from 'vuex';
+import com_mixin from "../components/shared_mixin";
 
 export default {
   name: "TestcaseDetail",
   component: {},
+  mixins: [com_mixin],
   watch: {
     '$route.params': function () {
       this.getTestcase(this.$route.params.id);
@@ -115,11 +115,7 @@ export default {
   computed: {
     // mix the getters into computed with object spread operator
     ...mapGetters([
-      "get_schema",
-      "get_summary",
-      "get_testcase_list",
       "get_current_execute_tc",
-      "get_default_config",
       "get_current_config",
     ]),
   },
@@ -136,13 +132,18 @@ export default {
       },
       testcase_build: ['OK', 'NA'],
       currentTestcase: null,
+      validateTestcaseFlag: {
+        valid: false,
+        new: false,
+        error_msg: ""
+      }
     };
   },
   methods: {
     getTestcase(id) {
-      TestcaseDataSerivce.get(id)
+      this.act_get_testcase_id(id)
         .then((response) => {
-          this.currentTestcase = response.data;
+          this.currentTestcase = response;
           this.currentTestcase.condition = this.currentTestcase.condition.replace(/\n/g, ' ');
           this.currentTestcase.expected = this.currentTestcase.expected.replace(/\n/g, ' ');
           this.currentTestcase.pics = this.currentTestcase.pics.replace(/\n/g, ' ');
@@ -154,46 +155,61 @@ export default {
         });
     },
     executeTestcase() {
-      var data = JSON.stringify(this.currentTestcase);
-      TestcaseDataSerivce.execute(this.currentTestcase.id, data)
-        .then(() => {
-          // trigger websocket to monitoring execution
-        })
-        .catch((e) => {
-          console.log(e.response);
-        });
+      if (this.get_current_execute_tc.isrunning === false) {
+          this.muta_update_execute_testcase({id: this.currentTestcase.id, name: this.currentTestcase.name, isrunning: true})
+        // parse config pics, pixit string and update config data
+        this.muta_update_partial_current_cfg(this.parseTestcaseConfig(this.currentTestcase.pics, this.currentTestcase.pixit));
+        var config = this.getConfigInt(this.get_current_config, this.$store.state.SCHEMA)
+        this.act_execute_testcase({id:this.get_current_execute_tc.id, config:config})
+          .then((response) => {
+            if (response.status === 200) {
+              // trigger websocket to monitoring execution
+              console.log(`execute testcase`);
+            }
+          })
+          .catch((e) => {
+            console.log(e);
+          });
+        }
+        else {
+          alert(`Testcase ${this.get_current_execute_tc.name} is in execution`);
+        }
     },
     showTestcaseLogs() {
 
     },
     updateTestcase() {
-      // if testcase name is changed -> check and create new testcase
-      // TestcaseDataSerivce.update(this.currentTestcase.id, this.currentTestcase)
-      //   .then((response) => {
-      //     console.log(response.data);
-      //   })
-      //   .catch((e) => {
-      //     console.log(e.response);
-      //   });
+      this.act_update_testcase({id:this.currentTestcase.id, data:this.currentTestcase})
+      .then((response) => {
+        console.log(response);
+      })
+      .catch((e) => {
+        console.log(e);
+      });
     },
     deleteTestcase() {
-      console.log(`delete testcase ${this.currentTestcase.id}`);
-      this.$router.push({ name: "Home" });
-      // TestcaseDataSerivce.delete(this.currentTestcase.id)
-      //   .then((response) => {
-      //     this.$router.push({ name: "Home" });
-      //   })
-      //   .catch((e) => {
-      //     console.log(e.response);
-      //   });
+      this.act_remove_testcase_id(this.currentTestcase.id)
+        .then((response) => {
+          if (response.status === 200) {
+            this.$router.push({ name: "Home" });
+          }
+          else {
+            alert(`Status code not 200 - ${response}`);
+          }
+        })
+        .catch((e) => {
+          alert(`Failed to delete testcase ${e.response}`);
+        });
     },
     ...mapMutations([
-      'muta_update_summary', // map `this.increment()` to `this.$store.commit('increment')`
-      // `mapMutations` also supports payloads:
-      'muta_update_testcase_list', // map `this.incrementBy(amount)` to `this.$store.commit('incrementBy', amount)`
       'muta_update_execute_testcase',
-      'muta_update_current_cfg',
-      'muta_update_default_cfg',
+      'muta_update_partial_current_cfg',
+    ]),
+    ...mapActions([
+      'act_update_testcase',
+      'act_get_testcase_id',
+      'act_remove_testcase_id',
+      'act_execute_testcase'
     ]),
   },
 };

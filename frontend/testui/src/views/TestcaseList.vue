@@ -47,7 +47,6 @@
 </template>
 
 <script>
-import TestcaseDataSerivce from "../services/testcase-data-serivce";
 import { mapMutations, mapGetters, mapActions } from 'vuex';
 import com_mixin from "../components/shared_mixin";
 
@@ -83,13 +82,13 @@ export default {
         "e" : "error"
       },
       headers: [
-        { text: "Testcase", value: "name", align: "start", sortable: true, filterable: true },
-        { text: "Condition", value: "condition", sortable: false },
-        { text: "Expected", value: "expected", sortable: false },
-        { text: "PICS", value: "pics", sortable: false },
-        { text: "PIXIT", value: "pixit", sortable: false },
-        { text: "Status", value: "status", sortable: false },
-        { text: "Build", value: "build_status", sortable: false },
+        { text: "Testcase", value: "name", align: "start", sortable: true, filterable: true},
+        { text: "Condition", value: "condition", sortable: false},
+        { text: "Expected", value: "expected", sortable: false},
+        { text: "PICS", value: "pics", sortable: false},
+        { text: "PIXIT", value: "pixit", sortable: false},
+        { text: "Status", value: "status", sortable: false},
+        { text: "Build", value: "build_status", sortable: false},
         { text: "Actions", value: "actions", sortable: false},
       ],
     };
@@ -146,7 +145,7 @@ export default {
         // parse config pics, pixit string and update config data
         this.muta_update_partial_current_cfg(this.parseTestcaseConfig(testcase.pics, testcase.pixit));
         var config = this.getConfigInt(this.get_current_config, this.$store.state.SCHEMA)
-        TestcaseDataSerivce.execute(this.get_current_execute_tc.id, config)
+        this.act_execute_testcase({id:this.get_current_execute_tc.id, config:config})
           .then((response) => {
             if (response.status == 200) {
               // trigger websocket to monitoring execution
@@ -162,12 +161,12 @@ export default {
       }
     },
     ...mapMutations([
-      'muta_update_testcase_list',
       'muta_update_execute_testcase',
       'muta_update_partial_current_cfg',
     ]),
     ...mapActions([
       'act_get_testcases',
+      'act_execute_testcase',
     ]),
   },
 };

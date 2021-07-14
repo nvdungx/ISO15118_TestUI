@@ -63,6 +63,9 @@ class TestcaseViewSet(viewsets.ModelViewSet):
     def retrieve(self, request, *args, **kwargs):
         return super().retrieve(request, *args, **kwargs)
 
+    def update(self, request, *args, **kwargs):
+        return super().update(request, *args, **kwargs)
+
 class TestcaseExecute(mixins.UpdateModelMixin,viewsets.GenericViewSet):
     queryset = TestcaseType.objects.all()
     serializer_class = TestcaseSerializer
@@ -79,8 +82,11 @@ class TestcaseExecute(mixins.UpdateModelMixin,viewsets.GenericViewSet):
                 v2g_path, slac_path = self.parse_config(request.data)
                 # save json config file to /tmp/
                 # call execute
-                 
-                # tc.path tc.name cfg_path
+                
+                # create django channel for socket data stream
+                
+                # sudo tc.path tc.name v2g_path slac_path
+                
                 # stream data back socket?
                 # store log file
             return Response(None, status.HTTP_200_OK)

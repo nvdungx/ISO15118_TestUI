@@ -95,7 +95,6 @@
 </template>
 
 <script>
-import TestcaseDataSerivce from "../services/testcase-data-serivce";
 import { mapGetters, mapMutations, mapActions } from "vuex";
 import com_mixin from "../components/shared_mixin";
 
@@ -125,7 +124,6 @@ export default {
       "get_schema",
       "get_current_execute_tc",
       "get_default_config",
-      "get_current_config",
       "get_testcase_by_id",
       "get_testcase_by_name"
     ]),
@@ -263,9 +261,7 @@ export default {
     executeTestcase() {
       this.muta_update_execute_testcase({id: this.target_testcase_id, name: this.target_testcase_name, isrunning: true});
       var config = this.getConfigInt(this.configuration, this.$store.state.SCHEMA);
-      // console.log(config);
-      // console.log(this.configuration);
-      TestcaseDataSerivce.execute(this.get_current_execute_tc.id, config)
+      this.act_execute_testcase({id:this.get_current_execute_tc.id, config:config})
         .then((response) => {
           console.log(response);
         })
@@ -274,7 +270,7 @@ export default {
         });
     },
     cancelTestcase() {
-      TestcaseDataSerivce.execute(this.target_testcase_id, {cancel: true})
+      this.act_execute_testcase({id:this.target_testcase_id, config:{cancel: true}})
         .then(() => {
           this.muta_update_execute_testcase({id: '', name: '', isrunning: false});
           this.verifyId(this.target_testcase_id);
@@ -286,12 +282,11 @@ export default {
     ...mapActions([
       'act_get_testcase_id',
       'act_get_testcase_name',
-      'act_get_testcases',
+      'act_execute_testcase',
     ]),
     ...mapMutations([
       'muta_update_execute_testcase',
       'muta_update_partial_current_cfg',
-      'muta_update_current_cfg',
       'muta_update_default_cfg',
     ]),
   },
