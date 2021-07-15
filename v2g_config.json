@@ -10,7 +10,7 @@
         "par_EVCC_waitForNextTC": 2,
         "par_SECC_waitForNextTC": 5,
         "par_SECC_T_step_X1": 3,
-        "par_SECC_Pmax0W": 111,
+        "par_SECC_Pmax0W": 200,
         "par_V2G_SECC_Sequence_Timeout": 60,
         "par_V2G_EVCC_Msg_Timeout_SupportedAppProtocolReq": 2,
         "par_V2G_EVCC_Msg_Timeout_SessionSetupReq": 2,
@@ -53,10 +53,10 @@
         "PICS_CMN_CMN_WakeUp": 300,
         "PICS_SECC_CMN_Pause": false,
         "PICS_SECC_CMN_EIMDone": 3,
-        "PICS_EVCC_CMN_PmaxSchedulewithZeroPow": 0,
+        "PICS_EVCC_CMN_PmaxSchedulewithZeroPow": 2,
         "PICS_CMN_CMN_V2gtpSdp": true,
         "PICS_CMN_CMN_V2gtpV2g": true,
-        "PICS_CMN_CMN_Renegotiation": true,
+        "PICS_CMN_CMN_Renegotiation": false,
         "PICS_CMN_CMN_RenegotiationLoopIndication": 1200,
         "PICS_CMN_CMN_LoopCounter": 2400,
         "PICS_CMN_CMN_InvalidV2gtpDataFields": true,
@@ -106,17 +106,17 @@
         "par_EVBatteryStepSize": 99,
         "par_EVBatteryVoltage": {
             "multiplier": 0,
-            "unit": 0,
+            "unit": 4,
             "value_": 300
         },
         "par_EVMaximumVoltageLimit": {
             "multiplier": 0,
-            "unit": 0,
+            "unit": 4,
             "value_": 500
         },
         "par_EVMaximumCurrentLimit": {
             "multiplier": 0,
-            "unit": 0,
+            "unit": 3,
             "value_": 110
         }
     }

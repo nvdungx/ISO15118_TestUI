@@ -21,6 +21,7 @@ from .serializers import MessageSerializer, TestcaseSerializer
 import re
 import json
 import multiprocessing
+from .consumers import LoggingConsumer
 
 
 # Create your views here.
@@ -66,29 +67,38 @@ class TestcaseViewSet(viewsets.ModelViewSet):
     def update(self, request, *args, **kwargs):
         return super().update(request, *args, **kwargs)
 
-class TestcaseExecute(mixins.UpdateModelMixin,viewsets.GenericViewSet):
+from .execute_tc import ExecTestcase
+class TestcaseExecute(mixins.RetrieveModelMixin,mixins.UpdateModelMixin,viewsets.GenericViewSet):
     queryset = TestcaseType.objects.all()
     serializer_class = TestcaseSerializer
+    exec_class = ExecTestcase
+
+    def retrieve(self, request, pk, *args, **kwargs):
+        # param check
+        # check exec_class if any testcase is in execution
+        # none then return available
+        # else return testcase in execution
+        # param cancel
+        super().retrieve(request, *args, **kwargs)
 
     def update(self, request, pk):
+        # update is for start specific
         try:
+            # check no item in execute
+            # then get pk
+            # load item to exec_class
             tc = self.queryset.get(pk=pk)
-            if ('cancel' in request.data.keys()):
-                pass
-                print(f"cancel{pk}")
-                # check if testcase is available and cancel
-            else:
-                print(f"exec{pk}")
-                v2g_path, slac_path = self.parse_config(request.data)
-                # save json config file to /tmp/
-                # trigger execute on consumers
-                
-                # create django channel for socket data stream
-                
-                # sudo tc.path tc.name v2g_path slac_path
-                
-                # stream data back socket?
-                # store log file
+            print(f"exec{pk}")
+            v2g_path, slac_path = self.parse_config(request.data)
+            # save json config file to /tmp/
+            # trigger execute on consumers
+            self.exec_class.run()
+            # create django channel for socket data stream
+            
+            # sudo tc.path tc.name v2g_path slac_path
+            
+            # stream data back socket?
+            # store log file
             return Response(None, status.HTTP_200_OK)
         except Exception as e:
             return Response(str(e.args), status.HTTP_417_EXPECTATION_FAILED)
