@@ -111,6 +111,12 @@ export default {
     this.target_testcase_id = this.get_current_execute_tc.id;
     this.target_testcase_name = this.get_current_execute_tc.name;
     this.valid_testcase = (this.get_current_execute_tc.id !== '') && (this.get_current_execute_tc.name !== '');
+    if (this.socket === null) {
+      this.socket = this.$store.state.logging_socket;
+    }
+    if (this.socket.readyState == WebSocket.OPEN) {
+      this.socket.send(JSON.stringify({message: "front end send"}));
+    }
   },
   computed: {
     // mix the getters into computed with object spread operator
@@ -149,7 +155,8 @@ export default {
       target_testcase_name: "",
       valid_testcase: false,
       err_msg_validate_name: "",
-      err_msg_validate_id: ""
+      err_msg_validate_id: "",
+      socket: null,
     };
   },
   methods: {

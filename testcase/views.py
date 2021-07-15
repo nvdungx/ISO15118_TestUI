@@ -81,7 +81,7 @@ class TestcaseExecute(mixins.UpdateModelMixin,viewsets.GenericViewSet):
                 print(f"exec{pk}")
                 v2g_path, slac_path = self.parse_config(request.data)
                 # save json config file to /tmp/
-                # call execute
+                # trigger execute on consumers
                 
                 # create django channel for socket data stream
                 

@@ -19,7 +19,7 @@ const config = {
   headers: {
     'Content-Type': 'application/json'
   },
-  timeout: 1000
+  timeout: 10000
 }
 const instance = axios.create(config)
 

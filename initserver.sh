@@ -1,7 +1,7 @@
 #!/bin/bash
 cd /home/pi
 # install precondition
-apt-get install -y python3-core python3-pip python3-venv git-core cmake make
+apt-get install -y python3-core python3-pip python3-venv git-core cmake make redis
 # clone git
 git clone https://github.com/nvdungx/testui.git
 cd /home/pi/testui

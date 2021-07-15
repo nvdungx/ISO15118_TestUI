@@ -103,6 +103,7 @@ class Command(BaseCommand):
                     if (0 == self.make_process.wait()):
                         for item in TestcaseType.objects.all():
                             item.build_status = "OK"
+                            item.save()
                         self.stdout.write("---- INITIALIZE DATABASE COMPLETED ----")
                     else:
                         self.stderr.write("ERROR: failed to build HLC test program")

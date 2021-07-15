@@ -63,7 +63,8 @@ export default {
         .then(() => {
           this.isLoading = false;
         })
-        .catch(() => {
+        .catch((e) => {
+          console.log(e);
           this.isLoading = false;
         });
     },
@@ -75,7 +76,9 @@ export default {
       });
     },
     ...mapMutations([]),
-    ...mapActions(["act_get_summary"]),
+    ...mapActions([
+      "act_get_summary",
+    ]),
   },
 };
 </script>

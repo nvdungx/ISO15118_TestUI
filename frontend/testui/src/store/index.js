@@ -7,6 +7,8 @@ import slac_schema_data from '../assets/slac_schema.json';
 import getters from './getters';
 import mutations from './mutations';
 import actions from './actions';
+import socket from '../services/logging_socket'
+
 const defaults = require('json-schema-defaults');
 
 Vue.use(Vuex)
@@ -49,7 +51,8 @@ export default new Vuex.Store({
       build_status: 'NA',
       pics: {},
       pixit: {},
-    }
+    },
+    logging_socket: socket,
   },
   // getter's result is cached based on its dependencies, and will only re-evaluate when some of its dependencies have changed.
   // this.$store.getters.doneTodosCount
