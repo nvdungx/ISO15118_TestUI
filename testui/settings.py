@@ -221,7 +221,7 @@ LOGGING = {
             'filters': ['require_debug_false'],
             'class': 'logging.handlers.RotatingFileHandler',
             'filename': os.getenv('PROD_LOG_FILE_PATH'),
-            'maxBytes' : 1024*1024*100, # 100MB
+            'maxBytes' : 1024*1024*20, # 20MB
             'backupCount' : 5,
             'formatter': 'simple'
         },

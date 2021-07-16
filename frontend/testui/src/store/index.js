@@ -53,6 +53,7 @@ export default new Vuex.Store({
       pixit: {},
     },
     logging_socket: socket,
+    logging_data: '',
   },
   // getter's result is cached based on its dependencies, and will only re-evaluate when some of its dependencies have changed.
   // this.$store.getters.doneTodosCount

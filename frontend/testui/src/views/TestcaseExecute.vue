@@ -108,14 +108,18 @@ export default {
     // watch change
   },
   mounted() {
-    this.target_testcase_id = this.get_current_execute_tc.id;
-    this.target_testcase_name = this.get_current_execute_tc.name;
-    this.valid_testcase = (this.get_current_execute_tc.id !== '') && (this.get_current_execute_tc.name !== '');
+    this.act_check_exec_testcase({id:this.get_current_execute_tc.id, query_params:{action:"get_info"}})
+      .then((response) => {
+        this.muta_update_execute_testcase(response.data);
+        this.target_testcase_id = this.get_current_execute_tc.id;
+        this.target_testcase_name = this.get_current_execute_tc.name;
+        this.valid_testcase = (this.get_current_execute_tc.id !== '') && (this.get_current_execute_tc.name !== '');
+      })
+      .catch((e) => {
+        console.log(e);
+      });
     if (this.socket === null) {
       this.socket = this.$store.state.logging_socket;
-    }
-    if (this.socket.readyState == WebSocket.OPEN) {
-      this.socket.send(JSON.stringify({message: "front end send"}));
     }
   },
   computed: {
@@ -182,7 +186,7 @@ export default {
         else {
           this.act_get_testcase_id(value)
             .then((testcase) => {
-              this.loadReturnTestcase(testcase);
+              this.loadReturnTestcase(testcase.data);
             })
             .catch(() => {
               this.valid_testcase = false;
@@ -266,30 +270,39 @@ export default {
       this.configuration = Vue.util.extend({}, this.get_default_config);
     },
     executeTestcase() {
-      this.muta_update_execute_testcase({id: this.target_testcase_id, name: this.target_testcase_name, isrunning: true});
-      var config = this.getConfigInt(this.configuration, this.$store.state.SCHEMA);
-      this.act_execute_testcase({id:this.get_current_execute_tc.id, config:config})
-        .then((response) => {
-          console.log(response);
-        })
-        .catch((e) => {
-          console.log(e);
-        });
+      if (this.get_current_execute_tc.isrunning == false) {
+        this.muta_update_execute_testcase({id: this.target_testcase_id, name: this.target_testcase_name, isrunning: true});
+        var config = this.getConfigInt(this.configuration, this.$store.state.SCHEMA);
+        this.act_execute_testcase({id:this.get_current_execute_tc.id, config:config})
+          .then((response) => {
+            console.log(response.data);
+          })
+          .catch((e) => {
+            console.log(e);
+          });
+      }
+      else {
+        alert(`Testcase ${this.get_current_execute_tc.name} is already in execution`);
+      }
     },
     cancelTestcase() {
-      this.act_execute_testcase({id:this.target_testcase_id, config:{cancel: true}})
-        .then(() => {
-          this.muta_update_execute_testcase({id: '', name: '', isrunning: false});
-          this.verifyId(this.target_testcase_id);
-        })
-        .catch((e) => {
-          console.log(e);
-        });
+      if (this.get_current_execute_tc.isrunning == true) {
+        this.act_check_exec_testcase({id:this.target_testcase_id, query_params:{action: "cancel"}})
+          .then((response) => {
+            this.muta_update_execute_testcase({id: '', name: '', isrunning: false});
+            this.verifyId(this.target_testcase_id);
+            console.log(response.data);
+          })
+          .catch((e) => {
+            console.log(e);
+          });
+      }
     },
     ...mapActions([
       'act_get_testcase_id',
       'act_get_testcase_name',
       'act_execute_testcase',
+      'act_check_exec_testcase',
     ]),
     ...mapMutations([
       'muta_update_execute_testcase',

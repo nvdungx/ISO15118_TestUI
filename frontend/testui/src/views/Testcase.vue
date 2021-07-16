@@ -143,7 +143,7 @@ export default {
     getTestcase(id) {
       this.act_get_testcase_id(id)
         .then((response) => {
-          this.currentTestcase = response;
+          this.currentTestcase = response.data;
           this.currentTestcase.condition = this.currentTestcase.condition.replace(/\n/g, ' ');
           this.currentTestcase.expected = this.currentTestcase.expected.replace(/\n/g, ' ');
           this.currentTestcase.pics = this.currentTestcase.pics.replace(/\n/g, ' ');
@@ -155,25 +155,7 @@ export default {
         });
     },
     executeTestcase() {
-      if (this.get_current_execute_tc.isrunning === false) {
-          this.muta_update_execute_testcase({id: this.currentTestcase.id, name: this.currentTestcase.name, isrunning: true})
-        // parse config pics, pixit string and update config data
-        this.muta_update_partial_current_cfg(this.parseTestcaseConfig(this.currentTestcase.pics, this.currentTestcase.pixit));
-        var config = this.getConfigInt(this.get_current_config, this.$store.state.SCHEMA)
-        this.act_execute_testcase({id:this.get_current_execute_tc.id, config:config})
-          .then((response) => {
-            if (response.status === 200) {
-              // trigger websocket to monitoring execution
-              console.log(`execute testcase`);
-            }
-          })
-          .catch((e) => {
-            console.log(e);
-          });
-        }
-        else {
-          alert(`Testcase ${this.get_current_execute_tc.name} is in execution`);
-        }
+      this.executeTest(this.currentTestcase);
     },
     showTestcaseLogs() {
 
@@ -209,7 +191,8 @@ export default {
       'act_update_testcase',
       'act_get_testcase_id',
       'act_remove_testcase_id',
-      'act_execute_testcase'
+      'act_execute_testcase',
+      'act_check_exec_testcase'
     ]),
   },
 };

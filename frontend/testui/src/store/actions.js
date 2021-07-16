@@ -53,7 +53,7 @@ export default {
         return new Promise((resolve, reject) => {
             common.getRequest(`/testcases/${id}/`, {},
                 function (res) {
-                    resolve(res.data);
+                    resolve(res);
                 },
                 function (error) {
                     reject(error);
@@ -66,7 +66,7 @@ export default {
         return new Promise((resolve, reject) => {
             common.deleteRequest(`/testcases/${id}/`,
                 function (res) {
-                    resolve(res.data);
+                    resolve(res);
                 },
                 function (error) {
                     reject(error);
@@ -79,7 +79,7 @@ export default {
         return new Promise((resolve, reject) => {
             common.putRequest(`/testcases/${id}/`, data,
                 function (res) {
-                    resolve(res.data);
+                    resolve(res);
                 },
                 function (error) {
                     reject(error);
@@ -92,7 +92,7 @@ export default {
         return new Promise((resolve, reject) => {
             common.postRequest(`/testcases/`, data,
                 function (res) {
-                    resolve(res.data);
+                    resolve(res);
                 },
                 function (error) {
                     reject(error);
@@ -105,7 +105,24 @@ export default {
         return new Promise((resolve, reject) => {
             common.putRequest(`/execute/${id}/`, config,
                 function (res) {
-                    resolve(res.data);
+                    resolve(res);
+                },
+                function (error) {
+                    reject(error);
+                }
+            );
+        });
+    },
+    act_check_exec_testcase: (context, {id, query_params}) => {
+        // get current execution testcase
+        // "action": ["get_info", "cancel"]
+        if (id === null || id === ''){
+            id = "0";
+        }
+        return new Promise((resolve, reject) => {
+            common.getRequest(`/execute/${id}/`, query_params,
+                function (res) {
+                    resolve(res);
                 },
                 function (error) {
                     reject(error);

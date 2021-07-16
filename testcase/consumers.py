@@ -22,25 +22,19 @@ class LoggingConsumer(WebsocketConsumer):
             self.channel_name
         )
 
-    # Receive message from WebSocket
+    # Receive message from WebSocket and send to group
     def receive(self, text_data):
         text_data_json = json.loads(text_data)
-        message = text_data_json['message']
+        # print(f"Consumer receive from socket? {self.__repr__()}: {text_data}")
+        # message = text_data_json['message']
         # Send message to room group
-        print(f"receive group board cast {message}")
         async_to_sync(self.channel_layer.group_send)(
             self.room_group_name,
-            {
-                'type': 'log.message',
-                'message': message
-            }
+            text_data_json
         )
 
     # Receive message from room group
     def log_message(self, event):
-        message = event['message']
         # Send message to WebSocket
-        print(f"send {message}")
-        self.send(text_data=json.dumps({
-            'message': message
-        }))
+        # print(f"Consumer receive from group? {self.__repr__()}: {event}")
+        self.send(text_data=json.dumps(event))

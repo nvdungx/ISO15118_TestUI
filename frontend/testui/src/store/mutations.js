@@ -63,4 +63,7 @@ export default {
             };
         }
     },
+    mutate_update_logging_data(state, payload) {
+        state.logging_data += payload;
+    }
 }

@@ -136,29 +136,22 @@ export default {
       this.$router.push({ name: "testcase-detail", params: { id: id } });
     },
     deleteTestcase(id) {
-      console.log(`delete testcase id ${id}`);
+      this.act_remove_testcase_id(id)
+        .then((response) => {
+          if (response.status === 200) {
+            this.$router.push({ name: "Home" });
+          }
+          else {
+            alert(`Status code not 200 - ${response}`);
+          }
+        })
+        .catch((e) => {
+          alert(`Failed to delete testcase ${e.response}`);
+        });
     },
     executeTestcase(testcase) {
       // check no testcase running then update data and execute
-      if (this.get_current_execute_tc.isrunning == false) {
-        this.muta_update_execute_testcase({id: testcase.id, name: testcase.name, isrunning: true})
-        // parse config pics, pixit string and update config data
-        this.muta_update_partial_current_cfg(this.parseTestcaseConfig(testcase.pics, testcase.pixit));
-        var config = this.getConfigInt(this.get_current_config, this.$store.state.SCHEMA)
-        this.act_execute_testcase({id:this.get_current_execute_tc.id, config:config})
-          .then((response) => {
-            if (response.status == 200) {
-              // trigger websocket to monitoring execution
-              console.log(`execute testcase`);
-            }
-          })
-          .catch((e) => {
-            console.log(e);
-          });
-      }
-      else {
-        alert(`Testcase ${this.get_current_execute_tc.name} is in execution`);
-      }
+      this.executeTest(testcase);
     },
     ...mapMutations([
       'muta_update_execute_testcase',
@@ -166,6 +159,8 @@ export default {
     ]),
     ...mapActions([
       'act_get_testcases',
+      'act_check_exec_testcase',
+      'act_remove_testcase_id',
       'act_execute_testcase',
     ]),
   },
