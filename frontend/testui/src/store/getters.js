@@ -24,4 +24,7 @@ export default {
     get_default_config: (state) => {
         return state.default_config;
     },
+    get_logging_value: (state) => {
+        return state.logging_data;
+    },
 }

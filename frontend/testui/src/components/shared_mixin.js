@@ -83,6 +83,7 @@ var comMixin = {
                   console.log(response.data);
               })
               .catch((e) => {
+                this.muta_update_execute_testcase({id: testcase.id, name: testcase.name, isrunning: false})
                 console.log(e);
               });
           }
@@ -91,6 +92,7 @@ var comMixin = {
           }
         })
         .catch((e) => {
+          this.muta_update_execute_testcase({id: testcase.id, name: testcase.name, isrunning: false})
           console.log(e);
         });
       },

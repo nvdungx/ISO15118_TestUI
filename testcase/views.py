@@ -71,30 +71,37 @@ class TestcaseViewSet(viewsets.ModelViewSet):
     def update(self, request, *args, **kwargs):
         return super().update(request, *args, **kwargs)
 
-
+from .execute_tc import TestExecManagement
 class TestcaseExecute(mixins.RetrieveModelMixin, mixins.UpdateModelMixin, viewsets.GenericViewSet):
     queryset = TestcaseType.objects.all()
     serializer_class = TestcaseSerializer
-    exec_class = ExecTestcase
+    exec_class = TestExecManagement
 
     def retrieve(self, request, pk, *args, **kwargs):
         # param check
         try:
             request_operation = request.query_params.get('action')
             if (request_operation == "get_info"):
-                return Response(self.exec_class.get_response_data(), status.HTTP_200_OK)
+                data = self.exec_class.get_current_exec()
+                return Response(data=data, status=status.HTTP_200_OK)
             elif (request_operation == "cancel"):
-                tc = self.queryset.get(pk=pk)
-                if (tc.id == self.exec_class.id):
-                    sts, sts_msg = self.exec_class.cancel()
-                    return Response({
-                        "status": sts,
-                        "message": sts_msg
-                    }, status.HTTP_200_OK)
-                else:
+                try:
+                    tc = self.queryset.get(pk=pk)
+                    sts, sts_msg = self.exec_class.cancel(tc.id)
+                    if (sts != None):
+                        return Response({
+                            "status": sts,
+                            "message": sts_msg
+                        }, status.HTTP_200_OK)
+                    else:
+                        return Response({
+                            "status": "Invalid testcase",
+                            "message": "Requested cancel testcase is not in execution"
+                        }, status.HTTP_404_NOT_FOUND)
+                except Exception as e:
                     return Response({
                         "status": "Invalid testcase",
-                        "message": "Requested cancel testcase is not in execution"
+                        "message": f"{e.args}"
                     }, status.HTTP_404_NOT_FOUND)
             else:
                 return Response({
@@ -114,20 +121,23 @@ class TestcaseExecute(mixins.RetrieveModelMixin, mixins.UpdateModelMixin, viewse
             # then get pk
             # load item to exec_class
             tc = self.queryset.get(pk=pk)
-            v2g_path, slac_path = self.parse_config(request.data)
-            # save json config file to /tmp/
-            # trigger execute on consumers
-            self.exec_class.run(tc, v2g_path, slac_path)
-            # create django channel for socket data stream
-
-            # sudo tc.path tc.name v2g_path slac_path
-
-            # stream data back socket?
-            # store log file
-            return Response({
-                "status": "OK",
-                "message": "Executing testcase"
-            }, status.HTTP_200_OK)
+            if (self.exec_class.is_available()):
+                # save json config file to /tmp/
+                v2g_path, slac_path = self.parse_config(request.data)
+                # create execution object
+                self.exec_class.create_exec(tc, v2g_path, slac_path)
+                # sudo tc.path tc.name v2g_path slac_path
+                self.exec_class.deploy(tc.id)
+                return Response({
+                    "status": "OK",
+                    "message": "Executing {0}".format(tc.name)
+                }, status.HTTP_200_OK)
+            else:
+                temp = self.exec_class.get_current_exec()
+                return Response({
+                    "status": "NG",
+                    "message": "Testcase {0} is in execution".format(temp["name"])
+                }, status.HTTP_226_IM_USED)
         except Exception as e:
             return Response({
                 "status": "Exception yikes",
@@ -140,7 +150,7 @@ class TestcaseExecute(mixins.RetrieveModelMixin, mixins.UpdateModelMixin, viewse
             "pics": test_config["pics"],
             "pixit": test_config["pixit"]
         }
-        v2g_path = "./v2g_config.json"
+        v2g_path = "/tmp/v2g_config.json"
         with open(v2g_path, "w", encoding="utf-8") as fp:
             json.dump(v2g_config, fp, indent=4)
         slac_config = {
@@ -152,7 +162,7 @@ class TestcaseExecute(mixins.RetrieveModelMixin, mixins.UpdateModelMixin, viewse
                 slac_config["threshold"][k] = v
             else:
                 slac_config["timer"][k] = v
-        slac_path = "./slac_config.json"
+        slac_path = "/tmp/slac_config.json"
         with open(slac_path, "w", encoding="utf-8") as fp:
             json.dump(slac_config, fp, indent=4)
         return v2g_path, slac_path

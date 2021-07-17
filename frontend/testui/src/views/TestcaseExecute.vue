@@ -1,7 +1,7 @@
 <template>
   <v-container fluid class="spacing-playground pa-6">
     <v-row dense>
-      <v-col class="d-flex align-center" cols="auto" sm="6">
+      <v-col class="d-flex align-center" cols="12" sm="6">
         <v-card class="mx-auto pa-4" tile>
           <v-card-title class="text-lg-h3">Configuration</v-card-title>
           <v-form ref="form" lazy-validation>
@@ -84,10 +84,18 @@
         </v-card>
       </v-col>
       <v-spacer></v-spacer>
-      <v-col cols="auto" sm="6">
+      <v-col cols="12" sm="6">
         <v-card class="mx-auto pa-4" tile>
           <v-card-title class="text-lg-h3"> Logging </v-card-title>
           <v-card-text> Log return from websocket </v-card-text>
+          <v-textarea
+          id="textarea_id"
+          v-model="this.get_logging_value"
+          outlined
+          readonly
+          dense
+          rows="25">
+          </v-textarea>
         </v-card>
       </v-col>
     </v-row>
@@ -105,7 +113,10 @@ export default {
   components: {},
   mixins: [com_mixin],
   watch: {
-    // watch change
+    '$store.state.logging_data': () => {
+      var textarea = document.getElementById('textarea_id');
+      textarea.scrollTop = textarea.scrollHeight;
+    }
   },
   mounted() {
     this.act_check_exec_testcase({id:this.get_current_execute_tc.id, query_params:{action:"get_info"}})
@@ -135,7 +146,8 @@ export default {
       "get_current_execute_tc",
       "get_default_config",
       "get_testcase_by_id",
-      "get_testcase_by_name"
+      "get_testcase_by_name",
+      'get_logging_value',
     ]),
   },
   updated() {
