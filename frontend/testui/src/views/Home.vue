@@ -1,7 +1,16 @@
 <template>
-  <v-row align="start" class="list px-3 mx-auto">
-    <v-col cols="12" sm="12">
-      <v-card class="mx-auto spacing-playground pa-6" tile>
+  <v-row
+    align="start"
+    class="list px-3 mx-auto"
+  >
+    <v-col
+      cols="12"
+      sm="12"
+    >
+      <v-card
+        class="mx-auto spacing-playground pa-6"
+        tile
+      >
         <v-card-title>ISO15118-2 Messages </v-card-title>
         <v-data-table
           :headers="headers"
@@ -30,57 +39,57 @@
 </template>
 
 <script>
-import { mapMutations, mapGetters, mapActions } from "vuex";
+import { mapMutations, mapGetters, mapActions } from 'vuex'
 
 export default {
-  name: "Home",
+  name: 'Home',
   component: {},
   watch: {},
   computed: {
     // mix the getters into computed with object spread operator
-    ...mapGetters(["get_summary"]),
+    ...mapGetters(['get_summary'])
   },
-  mounted() {
-    this.retrieveSummary();
+  mounted () {
+    this.retrieveSummary()
   },
   // When a Vue instance is created, it adds all the properties found in its data object to Vue’s reactivity system.
   // When the values of those properties change, the view will “react”, updating to match the new values.
-  data() {
+  data () {
     return {
       isLoading: false,
       headers: [
-        { text: "Message", value: "name", align: "start", sortable: true },
-        { text: "CMN", value: "CMN", sortable: false },
-        { text: "AC", value: "AC", sortable: false },
-        { text: "DC", value: "DC", sortable: false },
-      ],
-    };
+        { text: 'Message', value: 'name', align: 'start', sortable: true },
+        { text: 'CMN', value: 'CMN', sortable: false },
+        { text: 'AC', value: 'AC', sortable: false },
+        { text: 'DC', value: 'DC', sortable: false }
+      ]
+    }
   },
   methods: {
-    retrieveSummary() {
-      this.isLoading = true;
+    retrieveSummary () {
+      this.isLoading = true
       this.act_get_summary()
         .then(() => {
-          this.isLoading = false;
+          this.isLoading = false
         })
         .catch((e) => {
-          console.log(e);
-          this.isLoading = false;
-        });
+          console.log(e)
+          this.isLoading = false
+        })
     },
-    selectMsg(value) {
-      var msg_name = value.name.replace("TestCases_SECC_", "");
+    selectMsg (value) {
+      var msg_name = value.name.replace('TestCases_SECC_', '')
       this.$router.push({
-        name: "testcase-list",
-        query: { msg_type: msg_name },
-      });
+        name: 'testcase-list',
+        query: { msg_type: msg_name }
+      })
     },
     ...mapMutations([]),
     ...mapActions([
-      "act_get_summary",
-    ]),
-  },
-};
+      'act_get_summary'
+    ])
+  }
+}
 </script>
 
 <style>

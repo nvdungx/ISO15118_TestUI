@@ -1,6 +1,6 @@
-import Vue from 'vue';
-import VueRouter from 'vue-router';
-import Home from '../views/Home.vue';
+import Vue from 'vue'
+import VueRouter from 'vue-router'
+import Home from '../views/Home.vue'
 
 Vue.use(VueRouter)
 
@@ -21,14 +21,14 @@ const routes = [
     component: () => import('../views/Testcase.vue')
   },
   {
-    path: "/execute",
-    name: "testcase-execute",
-    component: () => import("../views/TestcaseExecute.vue")
+    path: '/execute',
+    name: 'testcase-execute',
+    component: () => import('../views/TestcaseExecute.vue')
   },
   {
-    path: "/new",
-    name: "testcase-new",
-    component: () => import("../views/TestcaseNew.vue")
+    path: '/new',
+    name: 'testcase-new',
+    component: () => import('../views/TestcaseNew.vue')
   }
 ]
 

@@ -24,3 +24,11 @@ asgi.py is a standard for Python asynchronous web apps and servers to communicat
 
 styles of HTML renderer provided by REST framework, one for dealing with HTML rendered using templates, the other for dealing with pre-rendered HTML
 
+copy gunicorn_start to venv/bin/
+copy testui.conf to /etc/supervisor/conf.d/
+supervisorctl reread
+supervisorctl update
+cd /etc/nginx/sites-available
+/etc/nginx/sites-enabled
+ln -s ../sites-availabe .
+sudo service nginx restart

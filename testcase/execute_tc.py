@@ -58,6 +58,7 @@ class ExecTestcase(threading.Thread):
             while (self.handle.poll() == None):
                 for line in iter(self.handle.stdout.readline, ''):
                     self.__log(line)
+                # self.__log(''.join(self.handle.stdout.readlines()))
                 # self.__log(self.handle.stdout.read(1024))
             if (self.isrunning):
                 self.isrunning = False

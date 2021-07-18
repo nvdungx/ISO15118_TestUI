@@ -3,6 +3,7 @@ npm -v
 sudo apt-get install node npm
 sudo npm install --global vue
 sudo npm install --global vue-cli
+sudo npm i -g http-server
 vue create project; cd project
 npm install vuetify vue-router vuex
 

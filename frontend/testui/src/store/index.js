@@ -1,15 +1,15 @@
-import Vue from 'vue';
-import Vuex from 'vuex';
-import pics_schema_data from '../assets/pics_schema.json';
-import pixit_schema_data from '../assets/pixit_schema.json';
+import Vue from 'vue'
+import Vuex from 'vuex'
+import pics_schema_data from '../assets/pics_schema.json'
+import pixit_schema_data from '../assets/pixit_schema.json'
 import timer_schema_data from '../assets/timer_schema.json'
-import slac_schema_data from '../assets/slac_schema.json';
-import getters from './getters';
-import mutations from './mutations';
-import actions from './actions';
+import slac_schema_data from '../assets/slac_schema.json'
+import getters from './getters'
+import mutations from './mutations'
+import actions from './actions'
 import socket from '../services/logging_socket'
 
-const defaults = require('json-schema-defaults');
+const defaults = require('json-schema-defaults')
 
 Vue.use(Vuex)
 
@@ -31,14 +31,14 @@ export default new Vuex.Store({
       pics: defaults(pics_schema_data),
       pixit: defaults(pixit_schema_data),
       timer: defaults(timer_schema_data),
-      slac: defaults(slac_schema_data),
+      slac: defaults(slac_schema_data)
     },
     // configuration after user modify
     current_config: {
       pics: defaults(pics_schema_data),
       pixit: defaults(pixit_schema_data),
       timer: defaults(timer_schema_data),
-      slac: defaults(slac_schema_data),
+      slac: defaults(slac_schema_data)
     },
     // target testcase to execute
     execute_testcase: {
@@ -50,10 +50,10 @@ export default new Vuex.Store({
       status: 'n',
       build_status: 'NA',
       pics: {},
-      pixit: {},
+      pixit: {}
     },
     logging_socket: socket,
-    logging_data: '',
+    logging_data: ''
   },
   // getter's result is cached based on its dependencies, and will only re-evaluate when some of its dependencies have changed.
   // this.$store.getters.doneTodosCount

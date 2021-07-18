@@ -95,6 +95,8 @@ CHANNEL_LAYERS = {
         "BACKEND": "channels_redis.core.RedisChannelLayer",
         "CONFIG": {
             "hosts": [("127.0.0.1", 6379)],
+            "capacity": 1500,
+            "expiry": 30,
         },
         # "ROUTING": "testui.routing.channel_routing",
     },
@@ -181,71 +183,71 @@ REST_FRAMEWORK = {
 #     }
 # }
 
-LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': True,
-    'formatters': {
-        'simple': {
-            'format': '[%(asctime)s] %(levelname)s %(message)s',
-            'datefmt': '%Y-%m-%d %H:%M:%S'
-        },
-        'verbose': {
-            'format': '[%(asctime)s] %(levelname)s [%(name)s.%(funcName)s:%(lineno)d] %(message)s',
-            'datefmt': '%Y-%m-%d %H:%M:%S'
-        },
-    },
-    'filters': {
-        'require_debug_false': {
-            '()': 'django.utils.log.RequireDebugFalse',
-        },
-        'require_debug_true': {
-            '()': 'django.utils.log.RequireDebugTrue',
-        },
-    },
-    'handlers': {
-        'console': {
-            'level': 'DEBUG',
-            'filters': ['require_debug_true'],
-            'class': 'logging.StreamHandler',
-            'formatter': 'simple'
-        },
-        'development_logfile': {
-            'level': 'DEBUG',
-            'filters': ['require_debug_true'],
-            'class': 'logging.FileHandler',
-            'filename': os.getenv('DEV_LOG_FILE_PATH'),
-            'formatter': 'verbose'
-        },
-        'production_logfile': {
-            'level': 'ERROR',
-            'filters': ['require_debug_false'],
-            'class': 'logging.handlers.RotatingFileHandler',
-            'filename': os.getenv('PROD_LOG_FILE_PATH'),
-            'maxBytes' : 1024*1024*20, # 20MB
-            'backupCount' : 5,
-            'formatter': 'simple'
-        },
-        'dba_logfile': {
-            'level': 'DEBUG',
-            'filters': ['require_debug_false','require_debug_true'],
-            'class': 'logging.handlers.WatchedFileHandler',
-            'filename': os.getenv('DBA_LOG_FILE_PATH'),
-            'formatter': 'simple'
-        },
-    },
-    'loggers': {
-        'firestorm': {
-            'level': 'DEBUG',
-            'handlers': ['console','development_logfile','production_logfile'],
-         },
-        'dba': {
-            'handlers': ['dba_logfile'],
-        },
-        'django': {
-            'handlers': ['development_logfile','production_logfile'],
-        },
-        'py.warnings': {
-            'handlers': ['development_logfile'],
-        },
-    }
-}
+# LOGGING = {
+#     'version': 1,
+#     'disable_existing_loggers': True,
+#     'formatters': {
+#         'simple': {
+#             'format': '[%(asctime)s] %(levelname)s %(message)s',
+#             'datefmt': '%Y-%m-%d %H:%M:%S'
+#         },
+#         'verbose': {
+#             'format': '[%(asctime)s] %(levelname)s [%(name)s.%(funcName)s:%(lineno)d] %(message)s',
+#             'datefmt': '%Y-%m-%d %H:%M:%S'
+#         },
+#     },
+#     'filters': {
+#         'require_debug_false': {
+#             '()': 'django.utils.log.RequireDebugFalse',
+#         },
+#         'require_debug_true': {
+#             '()': 'django.utils.log.RequireDebugTrue',
+#         },
+#     },
+#     'handlers': {
+#         'console': {
+#             'level': 'DEBUG',
+#             'filters': ['require_debug_true'],
+#             'class': 'logging.StreamHandler',
+#             'formatter': 'simple'
+#         },
+#         'development_logfile': {
+#             'level': 'DEBUG',
+#             'filters': ['require_debug_true'],
+#             'class': 'logging.FileHandler',
+#             'filename': os.getenv('DEV_LOG_FILE_PATH'),
+#             'formatter': 'verbose'
+#         },
+#         'production_logfile': {
+#             'level': 'ERROR',
+#             'filters': ['require_debug_false'],
+#             'class': 'logging.handlers.RotatingFileHandler',
+#             'filename': os.getenv('PROD_LOG_FILE_PATH'),
+#             'maxBytes' : 1024*1024*20, # 20MB
+#             'backupCount' : 5,
+#             'formatter': 'simple'
+#         },
+#         'dba_logfile': {
+#             'level': 'DEBUG',
+#             'filters': ['require_debug_false','require_debug_true'],
+#             'class': 'logging.handlers.WatchedFileHandler',
+#             'filename': os.getenv('DBA_LOG_FILE_PATH'),
+#             'formatter': 'simple'
+#         },
+#     },
+#     'loggers': {
+#         'firestorm': {
+#             'level': 'DEBUG',
+#             'handlers': ['console','development_logfile','production_logfile'],
+#          },
+#         'dba': {
+#             'handlers': ['dba_logfile'],
+#         },
+#         'django': {
+#             'handlers': ['development_logfile','production_logfile'],
+#         },
+#         'py.warnings': {
+#             'handlers': ['development_logfile'],
+#         },
+#     }
+# }
