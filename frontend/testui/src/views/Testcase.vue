@@ -178,7 +178,7 @@ export default {
         n: 'none',
         p: 'pass',
         i: 'inconclude',
-        f: 'pass',
+        f: 'fail',
         e: 'error'
       },
       testcase_build: ['OK', 'NA'],

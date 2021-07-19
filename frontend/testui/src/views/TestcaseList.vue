@@ -115,17 +115,17 @@ export default {
         n: 'none',
         p: 'pass',
         i: 'inconclude',
-        f: 'pass',
+        f: 'fail',
         e: 'error'
       },
       headers: [
         { text: 'Testcase', value: 'name', align: 'start', sortable: true, filterable: true },
         { text: 'Condition', value: 'condition', sortable: false },
         { text: 'Expected', value: 'expected', sortable: false },
-        { text: 'PICS', value: 'pics', sortable: false },
-        { text: 'PIXIT', value: 'pixit', sortable: false },
-        { text: 'Status', value: 'status', sortable: false },
-        { text: 'Build', value: 'build_status', sortable: false },
+        { text: 'PICS', value: 'pics', sortable: true },
+        { text: 'PIXIT', value: 'pixit', sortable: true },
+        { text: 'Status', value: 'status', sortable: true, filterable: true },
+        { text: 'Build', value: 'build_status', sortable: true, filterable: true },
         { text: 'Actions', value: 'actions', sortable: false }
       ]
     }

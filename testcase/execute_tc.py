@@ -4,7 +4,22 @@ import threading, subprocess
 from channels.layers import get_channel_layer
 from asgiref.sync import async_to_sync
 import inspect, time
+from .models import TestcaseType, TestcaseManager, MessageType
 
+RETURN_CODE_MAP = {
+    0:'n',
+    1:'p',
+    2:'i',
+    3:'f',
+    4:'e'
+}
+RETURN_CODE_MAP_LONG = {
+    0:'none',
+    1:'pass',
+    2:'inconclude',
+    3:'fail',
+    4:'error'
+}
 class ExecTestcase(threading.Thread):
     def __init__(self, testcase, v2g_cfg, slac_cfg):
         if (testcase != None):
@@ -63,7 +78,14 @@ class ExecTestcase(threading.Thread):
             if (self.isrunning):
                 self.isrunning = False
                 self.__log(self.handle.stdout.read())
-                self.__log(f"---- Execute {self.tc_name} completed ----\n", 'update')
+                try:
+                    tc = TestcaseType.objects.get(id=self.id)
+                    if (self.handle.returncode in RETURN_CODE_MAP.keys()):
+                        tc.status = RETURN_CODE_MAP[self.handle.returncode]
+                    tc.save()
+                    self.__log(f"---- Execute {self.tc_name} completed - status code: {RETURN_CODE_MAP_LONG[self.handle.returncode]} ----\n", 'update')
+                except Exception as e:
+                    self.__log(f"---- Execute {self.tc_name} completed - {e.args} ----\n", 'update')
         except Exception as e:
             self.__log(f"Error: {e.args}", 'none')
 
@@ -87,7 +109,7 @@ class TestExecManagement:
     @staticmethod
     def get_current_exec():
         return TestExecManagement.exec_object.get_response_data()
-    
+
     @staticmethod
     def create_exec(testcase, v2g_cfg_path, slac_cfg_path):
         TestExecManagement.exec_object = ExecTestcase(testcase, v2g_cfg_path, slac_cfg_path)
@@ -116,5 +138,3 @@ class TestExecManagement:
                 return False, f"Testcase {TestExecManagement.exec_object.tc_name} is not in execution"
         except Exception as e:
             return None, str(e.args)
-
-
