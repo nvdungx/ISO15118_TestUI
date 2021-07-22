@@ -331,10 +331,11 @@ export default {
     //   console.log('vjsf event', key, $event)
     // },
     storeConfig () {
-      const data = JSON.stringify(this.configuration, null, 4)
+      var config = this.getConfigInt(this.configuration, this.$store.state.SCHEMA)
+      const data = JSON.stringify(config, null, 4)
       const blob = new Blob([data], { type: 'text/plain' })
       const e = document.createEvent('MouseEvents'); const a = document.createElement('a')
-      a.download = 'config.json'
+      a.download = 'testconfig.json'
       a.href = window.URL.createObjectURL(blob)
       a.dataset.downloadurl = ['text/json', a.download, a.href].join(':')
       e.initEvent('click', true, false, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null)
