@@ -68,7 +68,7 @@ class ExecTestcase(threading.Thread):
         try:
             self.isrunning = True
             self.__log(f"---- Start execute {self.tc_name} ----\n", 'update')
-            self.handle = subprocess.Popen([self.path, self.tc_name, self.v2g_cfg_path, self.slac_cfg_path], stdout=subprocess.PIPE, universal_newlines=True)
+            self.handle = subprocess.Popen([self.path, self.tc_name, "I", self.v2g_cfg_path, self.slac_cfg_path], stdout=subprocess.PIPE, universal_newlines=True)
 
             while (self.handle.poll() == None):
                 for line in iter(self.handle.stdout.readline, ''):

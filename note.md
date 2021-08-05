@@ -32,3 +32,6 @@ cd /etc/nginx/sites-available
 /etc/nginx/sites-enabled
 ln -s ../sites-availabe .
 sudo service nginx restart
+
+tar -zcvf dist.tar.gz dist
+tar -zxvf dist.tar.gz
