@@ -7,7 +7,7 @@ from multiprocessing import Process
 from django.core.management import call_command
 
 class ParseItem:
-    PREFIX_LIST = ["1. CONDITION:", "2. EXPECTED:", "3. PICS selection:", "4. PIXIT selection:", "void TestCases_SECC"]
+    PREFIX_LIST = ["1. CONDITION:", "2. EXPECTED:", "3. PICS selection:", "4. PIXIT selection:", "verdict_val TestCases_SECC"]
     class PropName(IntEnum):
         condition=0
         expected=1
@@ -52,7 +52,7 @@ class ParseItem:
                 self.map_prop[self.cur_idx] += f'{inputstr}\n'
             else:
                 #void TestCases_SECC_Authorization::TC_SECC_CMN_VTB_Authorization_009()
-                rematch = re.match(r"void (TestCases_.*)::(TC_SECC_(CMN|AC|DC)_VTB_.*_\d+)\(", inputstr)
+                rematch = re.match(r"verdict_val (TestCases_.*)::(TC_SECC_(CMN|AC|DC)_VTB_.*_\d+)\(", inputstr)
                 if (rematch != None):
                     self.map_prop[ParseItem.PropName.tc_name] = rematch.group(2)
                     self.tc_type = rematch.group(3)
