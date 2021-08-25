@@ -3,24 +3,34 @@ var comMixin = {
     parseTestcaseConfig: function (pics_str, pixit_str) {
       var config_json = ['', ''];
       [pics_str, pixit_str].forEach((config, index) => {
-        config_json[index] = '{'
+        config_json[index] = '{';
         // replace all \n and split by ,
         config.replaceAll(/\n/g, '').split(',').forEach(element => {
           // split key and value
-          var items = element.split('=')
+          var items = element.split('=');
           // if not empty
           if (items.length > 1) {
-            config_json[index] += `"${items[0].trim()}":"${items[1].trim()}",`
+            if ((items[1].trim() === "true") || (items[1].trim() === "false")) {
+              config_json[index] += `"${items[0].trim()}":${items[1].trim()},`;
+            }
+            else if (!isNaN(parseFloat(items[1].trim())))
+            {
+              config_json[index] += `"${items[0].trim()}":${parseFloat(items[1].trim())},`;
+            }
+            else
+            {
+              config_json[index] += `"${items[0].trim()}":"${items[1].trim()}",`;
+            }
           }
         })
         if (config_json[index].length > 1) {
-          config_json[index] = config_json[index].slice(0, -1) + '}'
+          config_json[index] = config_json[index].slice(0, -1) + '}';
         } else {
-          config_json[index] += '}'
+          config_json[index] += '}';
         }
-        config_json[index] = JSON.parse(config_json[index])
-      })
-      return { pics: config_json[0], pixit: config_json[1] }
+        config_json[index] = JSON.parse(config_json[index]);
+      });
+      return { pics: config_json[0], pixit: config_json[1] };
     },
     __getLeafProp (input_obj, leaf_schema, root_schema) {
       Object.keys(input_obj).forEach((prop) => {
