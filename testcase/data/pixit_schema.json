@@ -361,6 +361,58 @@
       "type": "number",
       "default": 99.0
     },
+    "par_EVTargetVoltage": {
+      "description": "par_EVTargetVoltage",
+      "cppType": "iso1Part4_PhysicalValueType",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "multiplier": {
+          "description": "Multiplier value",
+          "type": "integer",
+          "default": 0
+        },
+        "unit": {
+          "$ref": "#/definitions/iso1Part4_UnitSymbolType"
+        },
+        "value_": {
+          "description": "Base value",
+          "type": "integer",
+          "default": 0
+        }
+      },
+      "default": {
+        "multiplier": 0,
+        "unit": "v",
+        "value_": 440
+      }
+    },
+    "par_EVTargetCurrent": {
+      "description": "par_EVTargetCurrent",
+      "cppType": "iso1Part4_PhysicalValueType",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "multiplier": {
+          "description": "Multiplier value",
+          "type": "integer",
+          "default": 0
+        },
+        "unit": {
+          "$ref": "#/definitions/iso1Part4_UnitSymbolType"
+        },
+        "value_": {
+          "description": "Base value",
+          "type": "integer",
+          "default": 0
+        }
+      },
+      "default": {
+        "multiplier": 0,
+        "unit": "a",
+        "value_": 20
+      }
+    },
     "par_EVBatteryVoltage": {
       "description": "par_EVBatteryVoltage",
       "cppType": "iso1Part4_PhysicalValueType",

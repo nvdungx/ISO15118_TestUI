@@ -4,8 +4,8 @@ var SERVER_ADDRESS = process.env.SERVER_ADDRESS
 var SERVER_PORT = process.env.SERVER_PORT
 var VERSION = process.env.API_VERSION
 
-var SERVER_BASE_URL = 'http://192.168.4.1:8000/api/v1'
-// var SERVER_BASE_URL = 'http://192.168.0.107:8000/api/v1'
+//var SERVER_BASE_URL = 'http://192.168.4.1:8000/api/v1'
+var SERVER_BASE_URL = 'http://127.0.0.1:8000/api/v1'
 if ((SERVER_ADDRESS !== undefined) && (SERVER_PORT !== undefined)) {
   SERVER_BASE_URL = `http://${SERVER_ADDRESS}:${SERVER_PORT}/api/${VERSION}`
 }
