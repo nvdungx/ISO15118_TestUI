@@ -68,7 +68,8 @@ var comMixin = {
       })
     },
     getConfigInt: function (input_config, schema) {
-      var send_config = { ...input_config }
+      // stupid language, clone
+      var send_config = JSON.parse(JSON.stringify(input_config))
       for (const section in send_config) {
         this.__getLeafProp(send_config[section], schema[section.toUpperCase()], schema[section.toUpperCase()])
       }

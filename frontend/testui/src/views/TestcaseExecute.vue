@@ -198,6 +198,7 @@
 
 <script>
 import { mapGetters, mapMutations, mapActions } from 'vuex'
+// import shared method between component
 import com_mixin from '../components/shared_mixin'
 
 import Vue from 'vue'
@@ -205,16 +206,20 @@ import Vue from 'vue'
 export default {
   name: 'TestcaseExecute',
   components: {},
+  // add shared method
   mixins: [com_mixin],
   watch: {
+    // update logging_data text area when data change
     '$store.state.logging_data': () => {
       var textarea = document.getElementById('textarea_id')
       textarea.scrollTop = textarea.scrollHeight
     }
   },
   mounted () {
+    // call action to check current execution testcase info
     this.act_check_exec_testcase({ id: this.get_current_execute_tc.id, query_params: { action: 'get_info' } })
       .then((response) => {
+        // response execute tc info from backend
         this.muta_update_execute_testcase(response.data)
         this.target_testcase_id = this.get_current_execute_tc.id
         this.target_testcase_name = this.get_current_execute_tc.name
@@ -224,6 +229,7 @@ export default {
         console.log(e)
       })
     if (this.socket === null) {
+      // update socket
       this.socket = this.$store.state.logging_socket
     }
   },
@@ -270,6 +276,7 @@ export default {
     }
   },
   methods: {
+    // load the return data from backend to testcase and change partial of current config
     loadReturnTestcase (testcase) {
       if (this.get_current_execute_tc.isrunning == false) {
         this.target_testcase_id = testcase.id
@@ -282,13 +289,17 @@ export default {
         this.valid_testcase = true
       }
     },
+    // verify the testcase if from user input
     verifyId (value) {
       if (value !== '' && value !== null && value !== undefined) {
+        // get the testcase from frontend temp data
         var tc = this.get_testcase_by_id(value)
         if (undefined !== tc) {
+          // load
           this.loadReturnTestcase(tc)
           return true
         } else {
+          // get from backend
           this.act_get_testcase_id(value)
             .then((testcase) => {
               this.loadReturnTestcase(testcase.data)
@@ -304,13 +315,17 @@ export default {
         return 'Testcase ID is required'
       }
     },
+    // verify the testcase name from user input
     verifyTestcaseName (value) {
       if (value !== '' && value !== null && value !== undefined) {
+        // get the testcase from frontend temp data
         var tc = this.get_testcase_by_name(value)
         if (undefined !== tc) {
+          // load
           this.loadReturnTestcase(tc)
           return true
         } else {
+          // get the testcase from backend
           this.act_get_testcase_name(value)
             .then((testcase) => {
               this.loadReturnTestcase(testcase)
@@ -330,6 +345,7 @@ export default {
     // logEvent(key, $event) {
     //   console.log('vjsf event', key, $event)
     // },
+    // store config to json file
     storeConfig () {
       var config = this.getConfigInt(this.configuration, this.$store.state.SCHEMA)
       const data = JSON.stringify(config, null, 4)
@@ -341,6 +357,7 @@ export default {
       e.initEvent('click', true, false, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null)
       a.dispatchEvent(e)
     },
+    // open windows event
     onButtonOpen () {
       this.isSelecting = true
       window.addEventListener(
@@ -352,6 +369,7 @@ export default {
       )
       this.$refs.uploader.click()
     },
+    // load the config json file from user selection
     openConfig (e) {
       var selectedFile = e.target.files[0]
       if (!selectedFile) {
@@ -361,7 +379,9 @@ export default {
       var reader = new FileReader()
       reader.readAsText(selectedFile, 'UTF-8')
       reader.onload = (evt) => {
+        // json should follow the schema
         var result_json = JSON.parse(evt.target.result)
+        // TODO: need check the input json here
         this.configuration = Vue.util.extend({}, result_json)
       }
       reader.onerror = (evt) => {
@@ -369,9 +389,11 @@ export default {
       }
       e.target.value = null
     },
+    // reset current page configuation to default
     resetConfig () {
       this.configuration = Vue.util.extend({}, this.get_default_config)
     },
+    // execute current input testcase
     executeTestcase () {
       if (this.get_current_execute_tc.isrunning == false) {
         this.muta_update_execute_testcase({ id: this.target_testcase_id, name: this.target_testcase_name, isrunning: true })
